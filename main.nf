@@ -77,20 +77,20 @@ process Column_rearrange_2 {
  */
 process mergeGeneFiles {
     input:
-      path gene from params.genes
-      path filtered_genemeta from Column_rearrange_1.out
+      path gene
+      path filtered_genemeta
 
     output:
       path params.output
 
     script:
     """
-      # Sort both files by the first column for join compatibility
-      sort -k1,1 "$gene" > sorted_gene.txt
-      sort -k1,1 filtered_genemeta.txt > sorted_genemeta.txt
-  
-      # Perform a left join to keep all data from gene file
-      join -a 1 -e 'NA' -t '\t' sorted_gene.txt sorted_genemeta.txt | cut -f1,4 > ${params.output} 
+        # Sort both files by the first column for join compatibility
+        sort -k1,1 "$gene" > sorted_gene.txt
+        sort -k1,1 filtered_genemeta.txt > sorted_genemeta.txt
+        
+        # Perform a left join to keep all data from gene file
+        join -a 1 -e 'NA' -t '\t' sorted_gene.txt sorted_genemeta.txt | cut -f1,4 > ${params.output} 
     """
 }
 
@@ -98,6 +98,10 @@ process scanpy_read_10x {
     input:
 
     output:
+        path anndata
+
+    conda:
+        
 
     script:
     """
@@ -344,4 +348,24 @@ process make_project_file {
     script:
     """
     """
+}
+
+workflow {
+
+    // Create input channel (single file via CLI parameter)
+    genemeta = Channel.fromPath('genemeta_data.txt')
+    genes = Channel.fromPath('genes_data.txt')
+    barcodes = Channel.fromPath('barcodes_data.txt')
+    matrix = Channel.fromPath('matrix_data.txt')
+    cellmeta = Channel.fromPath('cellmeta_data.txt')
+    pca_param = Channel.value('X_pca')
+    celltype_field_param = Channel.value('NO_CELLTYPE_FIELD')
+    batch_variable = Channel.value('')
+    perplexity_values = Channel.value(['1', '5', '10', '15', '20', '25', '30', '35', '40', '45', '50'])
+    resolution_values = Channel.value(['0.1', '0.3', '0.5', '0.7', '1.0', '2.0', '3.0', '4.0', '5.0'])
+
+
+    // Create index file for input BAM file
+    Column_rearrange_1(genemeta, "gene_id")
+    Column_rearrange_2(genemeta, "gene_id", "gene_name")
 }
