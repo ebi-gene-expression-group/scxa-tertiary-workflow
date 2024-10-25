@@ -2,18 +2,6 @@
 
 nextflow.enable.dsl=2
 
-// Define inputs as channels
-Channel.fromPath('genemeta_data.txt').set { genemeta }
-Channel.fromPath('genes_data.txt').set { genes }
-Channel.fromPath('barcodes_data.txt').set { barcodes }
-Channel.fromPath('matrix_data.txt').set { matrix }
-Channel.fromPath('cellmeta_data.txt').set { cellmeta }
-Channel.value('X_pca').set { pca_param }
-Channel.value('NO_CELLTYPE_FIELD').set { celltype_field_param }
-Channel.value('').set { batch_variable }
-Channel.value(['1', '5', '10', '15', '20', '25', '30', '35', '40', '45', '50']).set { perplexity_values }
-Channel.value(['0.1', '0.3', '0.5', '0.7', '1.0', '2.0', '3.0', '4.0', '5.0']).set { resolution_values }
-
 /*
  * Column_rearrange_1: Only keeps the specified columns and removes header
  */
