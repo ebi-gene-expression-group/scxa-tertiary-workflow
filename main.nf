@@ -18,12 +18,27 @@ Channel.value(['0.1', '0.3', '0.5', '0.7', '1.0', '2.0', '3.0', '4.0', '5.0']).s
  * Column_rearrange_1: Only keeps the specified columns and removes header
  */
 process Column_rearrange_1 {
+    // Set the output file
     input:
+      path genemeta
+      val col
 
     output:
+      path 'filtered_genemeta.txt'
 
     script:
     """
+      # Find the column number of the specified gene_id column name
+      col_num=\$(head -n1 "$genemeta" | tr '\\t' '\\n' | grep -n "^$col\$" | cut -d: -f1)
+  
+      # If column is found, extract it; otherwise, raise an error
+      if [[ -z "\$col_num" ]]; then
+          echo "Error: Column '$col' not found in $genemeta" >&2
+          exit 1
+      fi
+  
+      # Extract the gene_id column (without the header)
+      tail -n +2 "$genemeta" | cut -f\$col_num > filtered_genemeta.txt
     """
 }
 
@@ -33,11 +48,27 @@ process Column_rearrange_1 {
 process Column_rearrange_2 {
     // Set the output file
     input:
+      path genemeta
+      val col1
+      val col2
 
     output:
+      path 'filtered_genemeta_2.txt'
 
     script:
     """
+      # Find the column number of the specified gene_id column name
+      col_num_1=\$(head -n1 "$genemeta" | tr '\\t' '\\n' | grep -n "^$col1\$" | cut -d: -f1)
+      col_num_2=\$(head -n1 "$genemeta" | tr '\\t' '\\n' | grep -n "^$col2\$" | cut -d: -f1)
+  
+      # If either column is not found, raise an error
+      if [[ -z "\$col1_num" || -z "\$col2_num" ]]; then
+          echo "Error: Column '$col1' or '$col2' not found in $genemeta" >&2
+          exit 1
+      fi
+  
+      # Extract the gene_id column (without the header)
+      tail -n +2 "$genemeta" | cut -f\$col1_num,\$col2_num > filtered_genemeta.txt
     """
 }
 
