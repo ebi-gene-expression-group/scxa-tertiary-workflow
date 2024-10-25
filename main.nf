@@ -69,7 +69,7 @@ process mergeGeneFiles {
       path filtered_genemeta
 
     output:
-      path params.output
+      path 'merged_genemeta.tsv'
 
     script:
     """
@@ -78,29 +78,26 @@ process mergeGeneFiles {
         sort -k1,1 "$filtered_genemeta" > sorted_genemeta.txt
         
         # Perform a left join to keep all data from gene file
-        join -a 1 -e 'NA' -t '\t' sorted_gene.txt sorted_genemeta.txt | cut -f1,4 > ${params.output} 
+        join -a 1 -e 'NA' -t '\t' sorted_gene.txt sorted_genemeta.txt | cut -f1,4 > merged_genemeta.tsv
     """
 }
 
 process scanpy_read_10x {
     input:
         path matrix
-        path mergeGeneFiles.out
+        path genes
         path barcodes
         path cellmeta
         path genemeta
 
     output:
-        path anndata
-
-    conda:
-        
+        path 'anndata.h5ad'
 
     script:
     """
-        ln -s $matrix matrix.mtx
-        ln -s $genes genes.tsv
-        ln -s $barcodes barcodes.tsv
+        #ln -s $matrix matrix.mtx
+        #ln -s $genes genes.tsv
+        #ln -s $barcodes barcodes.tsv
         
         scanpy-read-10x --input-10x-mtx ./ \
         --var-names 'gene_ids' \
@@ -108,7 +105,7 @@ process scanpy_read_10x {
         --extra-var $genemeta  \
         --show-obj stdout \
         --output-format anndata \
-        $anndata
+        'anndata.h5ad'
     """
 }
 
@@ -359,8 +356,8 @@ workflow {
     // Create input channel (single file via CLI parameter)
     genemeta = Channel.fromPath('gene_metadata.tsv')
     genes = Channel.fromPath('genes.tsv')
-    barcodes = Channel.fromPath('barcodes_data.tsv')
-    matrix = Channel.fromPath('matrix_data.txt')
+    barcodes = Channel.fromPath('barcodes.tsv')
+    matrix = Channel.fromPath('matrix.mtx')
     cellmeta = Channel.fromPath('cell_metadata.tsv')
     pca_param = Channel.value('X_pca')
     celltype_field_param = Channel.value('NO_CELLTYPE_FIELD')
