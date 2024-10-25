@@ -56,7 +56,7 @@ process Column_rearrange_2 {
       fi
   
       # Extract the gene_id column (without the header)
-      tail -n +2 "$genemeta" | cut -f\$col1_num,\$col2_num > filtered_genemeta.txt
+      tail -n +2 "$genemeta" | cut -f\$col1_num,\$col2_num > filtered_genemeta_2.txt
     """
 }
 
@@ -75,7 +75,7 @@ process mergeGeneFiles {
     """
         # Sort both files by the first column for join compatibility
         sort -k1,1 "$gene" > sorted_gene.txt
-        sort -k1,1 filtered_genemeta.txt > sorted_genemeta.txt
+        sort -k1,1 "$filtered_genemeta" > sorted_genemeta.txt
         
         # Perform a left join to keep all data from gene file
         join -a 1 -e 'NA' -t '\t' sorted_gene.txt sorted_genemeta.txt | cut -f1,4 > ${params.output} 
@@ -356,4 +356,8 @@ workflow {
     // Create index file for input BAM file
     Column_rearrange_1(genemeta, "gene_id")
     Column_rearrange_2(genemeta, "gene_id", "gene_name")
+    mergeGeneFiles(
+        genes,
+        Column_rearrange_2.out
+    )
 }
