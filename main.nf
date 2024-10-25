@@ -50,13 +50,13 @@ process Column_rearrange_2 {
       col_num_2=\$(head -n1 "$genemeta" | tr '\\t' '\\n' | grep -n "^$col2\$" | cut -d: -f1)
   
       # If either column is not found, raise an error
-      if [[ -z "\$col1_num" || -z "\$col2_num" ]]; then
+      if [[ -z "\$col_num_1" || -z "\$col_num_2" ]]; then
           echo "Error: Column '$col1' or '$col2' not found in $genemeta" >&2
           exit 1
       fi
   
       # Extract the gene_id column (without the header)
-      tail -n +2 "$genemeta" | cut -f\$col1_num,\$col2_num > filtered_genemeta_2.txt
+      tail -n +2 "$genemeta" | cut -f\$col_num_1,\$col_num_2 > filtered_genemeta_2.txt
     """
 }
 
@@ -357,11 +357,11 @@ process make_project_file {
 workflow {
 
     // Create input channel (single file via CLI parameter)
-    genemeta = Channel.fromPath('genemeta_data.txt')
-    genes = Channel.fromPath('genes_data.txt')
-    barcodes = Channel.fromPath('barcodes_data.txt')
+    genemeta = Channel.fromPath('gene_metadata.tsv')
+    genes = Channel.fromPath('genes.tsv')
+    barcodes = Channel.fromPath('barcodes_data.tsv')
     matrix = Channel.fromPath('matrix_data.txt')
-    cellmeta = Channel.fromPath('cellmeta_data.txt')
+    cellmeta = Channel.fromPath('cell_metadata.tsv')
     pca_param = Channel.value('X_pca')
     celltype_field_param = Channel.value('NO_CELLTYPE_FIELD')
     batch_variable = Channel.value('')
