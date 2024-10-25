@@ -77,11 +77,20 @@ process Column_rearrange_2 {
  */
 process mergeGeneFiles {
     input:
+      path gene from params.genes
+      path filtered_genemeta from Column_rearrange_1.out
 
     output:
+      path params.output
 
     script:
     """
+      # Sort both files by the first column for join compatibility
+      sort -k1,1 "$gene" > sorted_gene.txt
+      sort -k1,1 filtered_genemeta.txt > sorted_genemeta.txt
+  
+      # Perform a left join to keep all data from gene file
+      join -a 1 -e 'NA' -t '\t' sorted_gene.txt sorted_genemeta.txt | cut -f1,4 > ${params.output} 
     """
 }
 
