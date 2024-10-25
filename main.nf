@@ -84,6 +84,11 @@ process mergeGeneFiles {
 
 process scanpy_read_10x {
     input:
+        path matrix
+        path mergeGeneFiles.out
+        path barcodes
+        path cellmeta
+        path genemeta
 
     output:
         path anndata
@@ -93,6 +98,17 @@ process scanpy_read_10x {
 
     script:
     """
+        ln -s $matrix matrix.mtx
+        ln -s $genes genes.tsv
+        ln -s $barcodes barcodes.tsv
+        
+        scanpy-read-10x --input-10x-mtx ./ \
+        --var-names 'gene_ids' \
+        --extra-obs $cellmeta \
+        --extra-var $genemeta  \
+        --show-obj stdout \
+        --output-format anndata \
+        $anndata
     """
 }
 
@@ -360,4 +376,11 @@ workflow {
         genes,
         Column_rearrange_2.out
     )
+    scanpy_read_10x(
+        matrix,
+        mergeGeneFiles.out,
+        barcodes,
+        cellmeta,
+        genemeta
+    )  
 }
