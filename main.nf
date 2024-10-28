@@ -102,7 +102,7 @@ process scanpy_read_10x {
         scanpy-read-10x --input-10x-mtx ./ \
         --var-names 'gene_ids' \
         --extra-obs $cellmeta \
-        --extra-var $genemeta  \
+        --extra-var $genemeta \
         --show-obj stdout \
         --output-format anndata \
         'anndata.h5ad'
@@ -123,9 +123,9 @@ process scanpy_filter_cells {
         --param 'c:n_counts' 750.0 1000000000.0 \
         --param 'c:pct_counts_mito' 0.0 0.35 \
         --category 'c:predicted_doublet' 'False' \
-        --input-format 'anndata' $anndata  \
+        --input-format 'anndata' $anndata \
         --show-obj stdout \
-        --output-format anndata 'filtered_cell_anndata.h5ad'  \
+        --output-format anndata 'filtered_cell_anndata.h5ad' \
         --export-mtx ./
     """
 }
@@ -147,18 +147,28 @@ process scanpy_filter_genes {
         --input-format 'anndata' $anndata \
         --show-obj stdout \
         --output-format anndata \
-        'filtered_gene_anndata.h5ad'  \
+        'filtered_gene_anndata.h5ad' \
         --export-mtx ./
     """
 }
 
 process normalise_data {
     input:
+        path anndata
 
     output:
+        path 'normalised_anndata.h5ad'
 
     script:
     """
+        scanpy-normalise-data \
+        --no-log-transform \
+        --normalize-to '1000000.0' \
+        --input-format 'anndata' $anndata \
+        --show-obj stdout \
+        --output-format anndata \
+        'normalised_anndata.h5ad' \
+        --export-mtx ./
     """
 }
 
@@ -392,9 +402,12 @@ workflow {
         barcodes,
         cellmeta,
         genemeta
-    )  
+    )
     scanpy_filter_cells(
         scanpy_read_10x.out,
         Column_rearrange_1.out[0]
-    )  
+    )
+    normalise_data(
+        scanpy_filter_cells.out
+    )
 }
