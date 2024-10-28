@@ -174,11 +174,19 @@ process normalise_data {
 
 process normalise_data_internal {
     input:
+        path anndata
 
     output:
+        path 'normalised_internal_anndata.h5ad'
 
     script:
     """
+        scanpy-normalise-data \
+        --normalize-to '1000000.0' \
+        --input-format 'anndata' $anndata \
+        --show-obj stdout \
+        --output-format anndata \
+        'normalised_internal_anndata.h5ad' 
     """
 }
 
@@ -408,6 +416,9 @@ workflow {
         Column_rearrange_1.out[0]
     )
     normalise_data(
+        scanpy_filter_cells.out
+    )
+    normalise_internal_data(
         scanpy_filter_cells.out
     )
 }
