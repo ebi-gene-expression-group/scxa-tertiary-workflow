@@ -132,11 +132,23 @@ process scanpy_filter_cells {
 
 process scanpy_filter_genes {
     input:
+        path anndata
+        path genes
 
     output:
+        path 'filtered_gene_anndata.h5ad'
 
     script:
     """
+        scanpy-filter-genes \
+        --param 'g:n_cells' 3.0 1000000000.0 \
+        --subset 'g:index' \
+        $genes \
+        --input-format 'anndata' $anndata \
+        --show-obj stdout \
+        --output-format anndata \
+        filtered_gene_anndata.h5ad'  \
+        --export-mtx ./
     """
 }
 
@@ -380,5 +392,9 @@ workflow {
         barcodes,
         cellmeta,
         genemeta
+    )  
+    scanpy_filter_cells(
+        scanpy_read_10x.out,
+        Column_rearrange_1.out[0]
     )  
 }
