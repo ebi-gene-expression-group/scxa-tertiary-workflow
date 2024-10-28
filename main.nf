@@ -147,7 +147,7 @@ process scanpy_filter_genes {
         --input-format 'anndata' $anndata \
         --show-obj stdout \
         --output-format anndata \
-        filtered_gene_anndata.h5ad'  \
+        'filtered_gene_anndata.h5ad'  \
         --export-mtx ./
     """
 }
