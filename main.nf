@@ -199,16 +199,6 @@ process neighbours_for_umap {
     """
 }
 
-process normalise_data {
-    input:
-
-    output:
-
-    script:
-    """
-    """
-}
-
 process find_clusters {
     input:
 
@@ -354,7 +344,7 @@ process make_project_file {
 workflow {
 
     // Create input channel (single file via CLI parameter)
-    genemeta = Channel.fromPath('gene_metadata.tsv')
+    genemeta = Channel.fromPath('genes_metadata.tsv')
     genes = Channel.fromPath('genes.tsv')
     barcodes = Channel.fromPath('barcodes.tsv')
     matrix = Channel.fromPath('matrix.mtx')
