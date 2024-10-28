@@ -303,7 +303,7 @@ process neighbours_for_umap {
         path 'neighbours_*.h5ad'
     script:
     """
-        for i in $sample
+        for i in $n_neighbours
         do
             scanpy-neighbors \
                 --n-neighbors \$i \
@@ -414,12 +414,32 @@ process run_umap {
 
 process run_tsne {
     input:
-
+        path anndata
+        val pca_param
+        val perplexity_values
     output:
-
+        path 'neighbours_*.h5ad'
     script:
     """
-    """
+        for i in $perplexity_values
+        do
+            scanpy-run-tsne \
+            --use-rep $pca_param \
+            --export-embedding embeddings.tsv \
+            --perplexity \$i \
+            --key-added 'perplexity_\$i' \
+            --early-exaggeration '12.0' \
+            --learning-rate '400.0' \
+            --no-fast-tsne \
+            --random-state 1234  \
+            --input-format 'anndata' \
+            $anndata \
+            --show-obj stdout \
+            --output-format anndata \
+            'tsne\$i.h5ad'
+            # Not sure if following is needed
+            # && mv 'embeddings_perplexity_1.tsv' embeddings.tsv
+        done
 }
 
 process filter_failed_umap {
@@ -475,7 +495,7 @@ workflow {
     pca_param = Channel.value('X_pca')
     celltype_field_param = Channel.value('NO_CELLTYPE_FIELD')
     batch_variable = Channel.value('')
-    perplexity_values = Channel.value(['1', '5', '10', '15', '20', '25', '30', '35', '40', '45', '50'])
+    perplexity_values = Channel.value("1 5 10 15 20 25 30 35 40 45 50")
     resolution_values = Channel.value(['0.1', '0.3', '0.5', '0.7', '1.0', '2.0', '3.0', '4.0', '5.0'])
     neighbor_values = Channel.value("10 100 15 20 25 3 30 5 50")
 
@@ -529,5 +549,9 @@ workflow {
         harmony_batch.out,
         neighbor_values
     )
-
+    run_tsne(
+        harmony_batch.out,
+        pca_param,
+        perplexity_values
+    )
 }
