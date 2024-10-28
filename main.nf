@@ -112,6 +112,7 @@ process scanpy_read_10x {
 process scanpy_filter_cells {
     input:
         path anndata
+        path genes
 
     output:
         path 'filtered_cell_anndata.h5ad'
@@ -122,7 +123,7 @@ process scanpy_filter_cells {
         --param 'c:n_counts' 750.0 1000000000.0 \
         --param 'c:pct_counts_mito' 0.0 0.35 \
         --category 'c:predicted_doublet' 'False' \
-        --input-format 'anndata' input.h5  \
+        --input-format 'anndata' $anndata  \
         --show-obj stdout \
         --output-format anndata 'filtered_cell_anndata.h5ad'  \
         --export-mtx ./
@@ -379,8 +380,5 @@ workflow {
         barcodes,
         cellmeta,
         genemeta
-    )  
-    scanpy_filter_cells(
-        scanpy_read_10x.out
     )  
 }
