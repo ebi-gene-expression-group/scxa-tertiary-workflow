@@ -480,7 +480,6 @@ workflow {
     neighbor_values = Channel.value("10 100 15 20 25 3 30 5 50")
 
 
-    // Create index file for input BAM file
     Column_rearrange_1(genemeta, "gene_id")
     Column_rearrange_2(genemeta, "gene_id", "gene_name")
     mergeGeneFiles(
