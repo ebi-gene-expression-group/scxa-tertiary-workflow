@@ -214,11 +214,22 @@ process find_variable_genes {
 
 process run_pca {
     input:
+        path anndata
 
     output:
+        path 'PCA.h5ad'
 
     script:
     """
+        scanpy-run-pca \
+        --no-zero-center \
+        --svd-solver 'arpack' \
+        --random-state '1234' \
+        --input-format 'anndata' \
+        $anndata \
+        --show-obj stdout \
+        --output-format anndata \
+        'PCA.h5ad'
     """
 }
 
@@ -435,5 +446,8 @@ workflow {
     )
     find_variable_genes(
         normalise_internal_data.out
+    )
+    run_pca(
+        find_variable_genes.out
     )
 }
