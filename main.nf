@@ -404,11 +404,33 @@ process filtered_cellgroup_markers {
 
 process run_umap {
     input:
-
+        path anndata
     output:
-
+        path 'umap_*.h5ad'
     script:
     """
+        for i in $anndata
+        do
+            scanpy-run-umap \
+            --neighbors-key 'neighbors_\$i' \
+            --key-added 'neighbors_\$i' \
+            --export-embedding embeddings.tsv \
+            --n-components 2 \
+            --min-dist 0.5 \
+            --spread 1.0 \
+            --alpha 1.0 \
+            --gamma 1.0 \
+            --negative-sample-rate 5 \
+            --random-state 0 \
+            --init-pos 'spectral' \
+            --input-format 'anndata' \
+            \$i \
+            --show-obj stdout \
+            --output-format anndata \
+            'umap_\$i.h5ad'  
+            # Not sure if following is needed
+            # && mv 'embeddings_neighbors_n_neighbors_100.tsv' embeddings.tsv
+        done
     """
 }
 
@@ -418,7 +440,7 @@ process run_tsne {
         val pca_param
         val perplexity_values
     output:
-        path 'neighbours_*.h5ad'
+        path 'tsne_*.h5ad'
     script:
     """
         for i in $perplexity_values
@@ -436,7 +458,7 @@ process run_tsne {
             $anndata \
             --show-obj stdout \
             --output-format anndata \
-            'tsne\$i.h5ad'
+            'tsne_\$i.h5ad'
             # Not sure if following is needed
             # && mv 'embeddings_perplexity_1.tsv' embeddings.tsv
         done
