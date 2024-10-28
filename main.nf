@@ -235,11 +235,16 @@ process run_pca {
 
 process harmony_batch {
     input:
-
+        path anndata
     output:
+        path 'harmony.h5ad'
 
     script:
     """
+        echo "No batch variables passed, simply passing original input as output unchanged."
+
+        cp $anndata 'harmony.h5ad'
+
     """
 }
 
@@ -449,5 +454,8 @@ workflow {
     )
     run_pca(
         find_variable_genes.out
+    )
+    harmony_batch(
+        run_pca.out
     )
 }
