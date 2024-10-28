@@ -250,11 +250,26 @@ process harmony_batch {
 
 process neighbours {
     input:
-
+        path anndata
+        val pca_param
     output:
+        path 'neighbours.h5ad'
 
     script:
     """
+        scanpy-neighbors \
+        --n-neighbors 15 \
+        --method 'umap' \
+        --metric 'euclidean' \
+        --random-state '0' \
+        --use-rep $pca_param \
+        --n-pcs '50' \
+        --input-format 'anndata' \
+        $anndata \
+        --show-obj stdout \
+        --output-format anndata \
+        'neighbours.h5ad'
+
     """
 }
 
@@ -457,5 +472,9 @@ workflow {
     )
     harmony_batch(
         run_pca.out
+    )
+    neighbours(
+        harmony_batch.out,
+        pca_param
     )
 }
