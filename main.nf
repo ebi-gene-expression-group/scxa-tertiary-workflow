@@ -297,11 +297,28 @@ process neighbours {
 
 process neighbours_for_umap {
     input:
-
+        path anndata
+        val n_neighbours
     output:
-
+        path 'neighbours_*.h5ad'
     script:
     """
+        for i in $sample
+        do
+            scanpy-neighbors \
+                --n-neighbors \$i \
+                --method 'umap' \
+                --metric 'euclidean' \
+                --random-state '0' \
+                --use-rep $pca_param \
+                --n-pcs '50' \
+                --input-format 'anndata' \
+                $anndata \
+                --show-obj stdout \
+                --output-format anndata \
+                'neighbours\$i.h5ad'
+        done
+
     """
 }
 
@@ -460,6 +477,7 @@ workflow {
     batch_variable = Channel.value('')
     perplexity_values = Channel.value(['1', '5', '10', '15', '20', '25', '30', '35', '40', '45', '50'])
     resolution_values = Channel.value(['0.1', '0.3', '0.5', '0.7', '1.0', '2.0', '3.0', '4.0', '5.0'])
+    neighbor_values = Channel.value("10 100 15 20 25 3 30 5 50")
 
 
     // Create index file for input BAM file
@@ -498,6 +516,10 @@ workflow {
         batch_variable
     )
     neighbours(
+        harmony_batch.out,
+        pca_param
+    )
+    neighbours_for_umap(
         harmony_batch.out,
         pca_param
     )
