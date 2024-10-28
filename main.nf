@@ -192,11 +192,23 @@ process normalise_data_internal {
 
 process find_variable_genes {
     input:
+        path anndata
 
     output:
+        path 'variable_genes.h5ad'
 
     script:
     """
+        scanpy-find-variable-genes \
+        --flavor 'seurat' \
+        --mean-limits 0.0125 1000000000.0 \
+        --disp-limits 0.5 50.0 \
+        --span 0.3 \
+        --n-bins '20' \
+        --input-format 'anndata' \
+        $anndata \
+        --show-obj stdout \
+        --output-format anndata 'variable_genes.h5ad'
     """
 }
 
@@ -420,5 +432,8 @@ workflow {
     )
     normalise_internal_data(
         scanpy_filter_cells.out
+    )
+    find_variable_genes(
+        normalise_internal_data.out
     )
 }
