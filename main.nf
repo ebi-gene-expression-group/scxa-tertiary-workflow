@@ -527,6 +527,7 @@ workflow {
     )
     neighbours_for_umap(
         harmony_batch.out,
-        pca_param
+        neighbor_values
     )
+
 }
