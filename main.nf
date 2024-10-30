@@ -93,6 +93,8 @@ process scanpy_read_10x {
     output:
         path 'anndata.h5ad'
 
+    container 'quay.io/biocontainers/scanpy-scripts:1.1.6--pypyhdfd78af_0'
+
     script:
     """
         #ln -s $matrix matrix.mtx
@@ -172,7 +174,7 @@ process normalise_data {
     """
 }
 
-process normalise_data_internal {
+process normalise_internal_data {
     input:
         path anndata
 
@@ -462,6 +464,7 @@ process run_tsne {
             # Not sure if following is needed
             # && mv 'embeddings_perplexity_1.tsv' embeddings.tsv
         done
+    """
 }
 
 process filter_failed_umap {
