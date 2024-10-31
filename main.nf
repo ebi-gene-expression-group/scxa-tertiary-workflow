@@ -212,10 +212,8 @@ process find_variable_genes {
     script:
     """
         batch_variable_tag=""
-        if [[ -z "$batch_variable" ]]; then
+        if [[ -n "$batch_variable" ]]; then
             batch_variable_tag="--batch-key $batch_variable"
-        else
-            batch_variable = ""
         fi
 
 
@@ -267,7 +265,7 @@ process harmony_batch {
 
     script:
     """
-        if [[ -z "$batch_variable" ]]; then
+        if [[ -n "$batch_variable" ]]; then
             scanpy-integrate harmony \
             --batch-key $batch_variable \
             --basis 'X_pca' \
@@ -319,6 +317,7 @@ process neighbours_for_umap {
     input:
         path anndata
         val n_neighbours
+        val pca_param
     output:
         path 'neighbours_*.h5ad'
     script:
@@ -336,7 +335,7 @@ process neighbours_for_umap {
                 $anndata \
                 --show-obj stdout \
                 --output-format anndata \
-                'neighbours\$i.h5ad'
+                'neighbours_\$i.h5ad'
         done
 
     """
@@ -594,7 +593,8 @@ workflow {
     )
     neighbours_for_umap(
         harmony_batch.out,
-        neighbor_values
+        neighbor_values,
+        pca_param
     )
     run_tsne(
         harmony_batch.out,
