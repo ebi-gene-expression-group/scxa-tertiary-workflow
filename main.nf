@@ -83,7 +83,7 @@ process mergeGeneFiles {
 }
 
 process scanpy_read_10x {
-        container 'quay.io/biocontainers/scanpy-scripts:1.1.6--pypyhdfd78af_0'
+    container 'quay.io/biocontainers/scanpy-scripts:1.1.6--pypyhdfd78af_0'
     
     input:
         path matrix
@@ -112,6 +112,8 @@ process scanpy_read_10x {
 }
 
 process scanpy_filter_cells {
+    container 'quay.io/biocontainers/scanpy-scripts:1.1.6--pypyhdfd78af_0'
+    
     input:
         path anndata
         path genes
@@ -124,7 +126,7 @@ process scanpy_filter_cells {
         scanpy-filter-cells --gene-name 'gene_symbols' \
         --param 'c:n_counts' 750.0 1000000000.0 \
         --param 'c:pct_counts_mito' 0.0 0.35 \
-        --category 'c:predicted_doublet' 'False' \
+        # --category 'c:predicted_doublet' 'False' \ # commenting temporary as error attribute not found
         --input-format 'anndata' $anndata \
         --show-obj stdout \
         --output-format anndata 'filtered_cell_anndata.h5ad' \
@@ -133,6 +135,8 @@ process scanpy_filter_cells {
 }
 
 process scanpy_filter_genes {
+    container 'quay.io/biocontainers/scanpy-scripts:1.1.6--pypyhdfd78af_0'
+
     input:
         path anndata
         path genes
@@ -155,6 +159,8 @@ process scanpy_filter_genes {
 }
 
 process normalise_data {
+    container 'quay.io/biocontainers/scanpy-scripts:1.1.6--pypyhdfd78af_0'
+
     input:
         path anndata
 
