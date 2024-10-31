@@ -180,6 +180,8 @@ process normalise_data {
 }
 
 process normalise_internal_data {
+    container 'quay.io/biocontainers/scanpy-scripts:1.1.6--pypyhdfd78af_0'
+    
     input:
         path anndata
 
@@ -198,6 +200,8 @@ process normalise_internal_data {
 }
 
 process find_variable_genes {
+    container 'quay.io/biocontainers/scanpy-scripts:1.1.6--pypyhdfd78af_0'
+
     input:
         path anndata
         val batch_variable
@@ -207,8 +211,9 @@ process find_variable_genes {
 
     script:
     """
-        if [[ -z "\$batch_variable" ]]; then
-            batch_variable = "--batch-key $batch_variable"
+        batch_variable_tag=""
+        if [[ -z "$batch_variable" ]]; then
+            batch_variable_tag="--batch-key $batch_variable"
         else
             batch_variable = ""
         fi
@@ -220,7 +225,7 @@ process find_variable_genes {
         --disp-limits 0.5 50.0 \
         --span 0.3 \
         --n-bins '20' \
-        $batch_variable \
+        \$batch_variable_tag \
         --input-format 'anndata' \
         $anndata \
         --show-obj stdout \
@@ -229,6 +234,8 @@ process find_variable_genes {
 }
 
 process run_pca {
+    container 'quay.io/biocontainers/scanpy-scripts:1.1.6--pypyhdfd78af_0'
+
     input:
         path anndata
 
@@ -250,6 +257,8 @@ process run_pca {
 }
 
 process harmony_batch {
+    container 'quay.io/biocontainers/scanpy-scripts:1.1.6--pypyhdfd78af_0'
+
     input:
         path anndata
         val batch_variable
@@ -258,7 +267,7 @@ process harmony_batch {
 
     script:
     """
-        if [[ -z "\$batch_variable" ]]; then
+        if [[ -z "$batch_variable" ]]; then
             scanpy-integrate harmony \
             --batch-key $batch_variable \
             --basis 'X_pca' \
@@ -278,6 +287,8 @@ process harmony_batch {
 }
 
 process neighbours {
+    container 'quay.io/biocontainers/scanpy-scripts:1.1.6--pypyhdfd78af_0'
+
     input:
         path anndata
         val pca_param
@@ -303,6 +314,8 @@ process neighbours {
 }
 
 process neighbours_for_umap {
+    container 'quay.io/biocontainers/scanpy-scripts:1.1.6--pypyhdfd78af_0'
+
     input:
         path anndata
         val n_neighbours
@@ -410,6 +423,8 @@ process filtered_cellgroup_markers {
 }
 
 process run_umap {
+    container 'quay.io/biocontainers/scanpy-scripts:1.1.6--pypyhdfd78af_0'
+    
     input:
         path anndata
     output:
@@ -442,6 +457,8 @@ process run_umap {
 }
 
 process run_tsne {
+    container 'quay.io/biocontainers/scanpy-scripts:1.1.6--pypyhdfd78af_0'
+    
     input:
         path anndata
         val pca_param
