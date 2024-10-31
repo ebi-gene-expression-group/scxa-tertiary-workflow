@@ -126,7 +126,6 @@ process scanpy_filter_cells {
         scanpy-filter-cells --gene-name 'gene_symbols' \
         --param 'c:n_counts' 750.0 1000000000.0 \
         --param 'c:pct_counts_mito' 0.0 0.35 \
-        # --category 'c:predicted_doublet' 'False' \ # commenting temporary as error attribute not found
         --input-format 'anndata' $anndata \
         --show-obj stdout \
         --output-format anndata 'filtered_cell_anndata.h5ad' \
