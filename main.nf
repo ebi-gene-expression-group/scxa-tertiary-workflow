@@ -83,6 +83,8 @@ process mergeGeneFiles {
 }
 
 process scanpy_read_10x {
+        container 'quay.io/biocontainers/scanpy-scripts:1.1.6--pypyhdfd78af_0'
+    
     input:
         path matrix
         path genes
@@ -93,12 +95,10 @@ process scanpy_read_10x {
     output:
         path 'anndata.h5ad'
 
-    container 'quay.io/biocontainers/scanpy-scripts:1.1.6--pypyhdfd78af_0'
-
     script:
     """
         #ln -s $matrix matrix.mtx
-        #ln -s $genes genes.tsv
+        ln -s $genes genes.tsv
         #ln -s $barcodes barcodes.tsv
         
         scanpy-read-10x --input-10x-mtx ./ \
