@@ -459,18 +459,16 @@ process run_tsne {
     input:
         path anndata
         val pca_param
-        val perplexity_values
+        each perplexity_values
     output:
         path 'tsne_*.h5ad'
     script:
     """
-        for i in $perplexity_values
-        do
             scanpy-run-tsne \
             --use-rep $pca_param \
             --export-embedding embeddings.tsv \
-            --perplexity \$i \
-            --key-added 'perplexity_\$i' \
+            --perplexity \$perplexity_values \
+            --key-added 'perplexity_\$perplexity_values' \
             --early-exaggeration '12.0' \
             --learning-rate '400.0' \
             --no-fast-tsne \
@@ -479,10 +477,9 @@ process run_tsne {
             $anndata \
             --show-obj stdout \
             --output-format anndata \
-            'tsne_\$i.h5ad'
+            'tsne_\$perplexity_values.h5ad'
             # Not sure if following is needed
             # && mv 'embeddings_perplexity_1.tsv' embeddings.tsv
-        done
     """
 }
 
