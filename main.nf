@@ -314,18 +314,20 @@ process neighbours {
 process neighbours_for_umap {
     container 'quay.io/biocontainers/scanpy-scripts:1.1.6--pypyhdfd78af_0'
 
+    errorStrategy { task.exitStatus in 137..140 ? 'retry' : 'terminate' }
+    memory { 4.GB * task.attempt }
+    maxRetries 3
+
     input:
         path anndata
-        val n_neighbours
+        each n_neighbours
         val pca_param
     output:
         path 'neighbours_*.h5ad'
     script:
     """
-        for i in $n_neighbours
-        do
             scanpy-neighbors \
-                --n-neighbors \$i \
+                --n-neighbors \$n_neighbours \
                 --method 'umap' \
                 --metric 'euclidean' \
                 --random-state '0' \
@@ -335,8 +337,7 @@ process neighbours_for_umap {
                 $anndata \
                 --show-obj stdout \
                 --output-format anndata \
-                'neighbours_\$i.h5ad'
-        done
+                'neighbours_\${n_neighbours}.h5ad'
 
     """
 }
