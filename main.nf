@@ -425,16 +425,14 @@ process run_umap {
     container 'quay.io/biocontainers/scanpy-scripts:1.1.6--pypyhdfd78af_0'
     
     input:
-        path anndata
+        each anndata
     output:
         path 'umap_*.h5ad'
     script:
     """
-        for i in $anndata
-        do
             scanpy-run-umap \
-            --neighbors-key 'neighbors_\$i' \
-            --key-added 'neighbors_\$i' \
+            --neighbors-key 'neighbors_\$anndata' \
+            --key-added 'neighbors_\$anndata' \
             --export-embedding embeddings.tsv \
             --n-components 2 \
             --min-dist 0.5 \
@@ -445,13 +443,13 @@ process run_umap {
             --random-state 0 \
             --init-pos 'spectral' \
             --input-format 'anndata' \
-            \$i \
+            \$anndata \
             --show-obj stdout \
             --output-format anndata \
-            'umap_\$i.h5ad'  
+            'umap_\$anndata.h5ad'  
             # Not sure if following is needed
             # && mv 'embeddings_neighbors_n_neighbors_100.tsv' embeddings.tsv
-        done
+
     """
 }
 
