@@ -466,7 +466,7 @@ process run_umap {
     input:
         path anndata
     output:
-        path 'umap_*.h5ad'
+        path "umap_*.h5ad"
     script:
     """
             scanpy-run-umap \
@@ -485,7 +485,7 @@ process run_umap {
             $anndata \
             --show-obj stdout \
             --output-format anndata \
-            'umap_$anndata.h5ad'  
+            'umap_${anndata}.h5ad'  
             # Not sure if following is needed
             # && mv 'embeddings_neighbors_n_neighbors_100.tsv' embeddings.tsv
 
