@@ -462,7 +462,7 @@ process run_tsne {
         tuple path(anndata), val(perplexity_values)
         val pca_param
     output:
-        path 'tsne_${perplexity_values}.h5ad'
+        path "tsne_${perplexity_values}.h5ad"
     script:
     """
             scanpy-run-tsne \
