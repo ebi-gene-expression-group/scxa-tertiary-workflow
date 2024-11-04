@@ -362,7 +362,7 @@ process find_clusters {
         --directed \
         --export-cluster output.tsv \
         --input-format 'anndata' \
-        input.h5 \
+        $anndata \
         --show-obj stdout \
         --output-format anndata \
         'clusters_${resolution}.h5ad'
