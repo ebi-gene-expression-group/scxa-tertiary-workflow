@@ -2,10 +2,29 @@
 
 nextflow.enable.dsl=2
 
+params.celltype_field = 'NO_CELLTYPE_FIELD'
 params.neighbor_values = ['10', '100', '15', '20', '25', '3', '30', '5', '50']
 params.perplexity_values = ['1', '5', '10', '15', '20', '25', '30', '35', '40', '45', '50']
 params.resolution_values = ['0.1', '0.3', '0.5', '0.7', '1.0', '2.0', '3.0', '4.0', '5.0']
-    
+params.slotname = "louvain_resolution"
+params.clustering_slotname = params.resolution_values.collect { params.slotname + "_" + it }
+params.merged_group_slotname = params.clustering_slotname + params.celltype_field
+
+
+log.info """
+===============================
+WORKFLOW PARAMETER VALUES
+===============================
+celltype_field: ${params.celltype_field}
+neighbor_values: ${params.neighbor_values}
+perplexity_values: ${params.perplexity_values}
+resolution_values: ${params.resolution_values}
+slotname: ${params.slotname}
+clustering_slotname: ${params.clustering_slotname}
+merged_group_slotname: ${params.merged_group_slotname}
+===============================
+"""
+
 /*
  * Column_rearrange_1: Only keeps the specified columns and removes header
  */
@@ -551,7 +570,6 @@ workflow {
     matrix = Channel.fromPath('matrix.mtx')
     cellmeta = Channel.fromPath('cell_metadata.tsv')
     pca_param = Channel.value('X_pca')
-    celltype_field_param = Channel.value('NO_CELLTYPE_FIELD')
     batch_variable = Channel.value('')
     neighbors_ch = channel.fromList(params.neighbor_values)
     perplexity_ch = channel.fromList(params.perplexity_values)
