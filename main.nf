@@ -307,14 +307,14 @@ process harmony_batch {
     """
 }
 
-process neighbours {
+process neighbors {
     container 'quay.io/biocontainers/scanpy-scripts:1.1.6--pypyhdfd78af_0'
 
     input:
         path anndata
         val pca_param
     output:
-        path 'neighbours.h5ad'
+        path 'neighbors.h5ad'
 
     script:
     """
@@ -329,12 +329,12 @@ process neighbours {
         $anndata \
         --show-obj stdout \
         --output-format anndata \
-        'neighbours.h5ad'
+        'neighbors.h5ad'
 
     """
 }
 
-process neighbours_for_umap {
+process neighbors_for_umap {
     container 'quay.io/biocontainers/scanpy-scripts:1.1.6--pypyhdfd78af_0'
 
     errorStrategy { task.exitStatus in 137..140 ? 'retry' : 'terminate' }
@@ -342,15 +342,15 @@ process neighbours_for_umap {
     maxRetries 3
 
     input:
-        tuple path(anndata), val(n_neighbours)
+        tuple path(anndata), val(n_neighbors)
         val pca_param
     output:
-        path "neighbours_${n_neighbours}.h5ad"
+        path "neighbors_${n_neighbors}.h5ad"
     script:
     """
         scanpy-neighbors \
-            --n-neighbors $n_neighbours \
-            --key-added 'neighbors_n_neighbors_${n_neighbours}' \
+            --n-neighbors $n_neighbors \
+            --key-added 'neighbors_n_neighbors_${n_neighbors}' \
             --method 'umap' \
             --metric 'euclidean' \
             --random-state '0' \
@@ -360,7 +360,7 @@ process neighbours_for_umap {
             $anndata \
             --show-obj stdout \
             --output-format anndata \
-            'neighbours_${n_neighbours}.h5ad'
+            'neighbors_${n_neighbors}.h5ad'
 
     """
 }
@@ -621,11 +621,11 @@ workflow {
         run_pca.out,
         batch_variable
     )
-    neighbours(
+    neighbors(
         harmony_batch.out,
         pca_param
     )
-    neighbours_for_umap(
+    neighbors_for_umap(
         harmony_batch.out.combine(neighbors_ch),
         pca_param
     )
@@ -637,11 +637,11 @@ workflow {
     //    .filter { it.exitStatus == 0 }
 
     UMAPs_ch = run_umap(
-        neighbours_for_umap.out.flatten()
+        neighbors_for_umap.out.flatten()
     )
     //UMAPs_ch
    //     .filter { it.exitStatus == 0 }
     find_clusters(
-        neighbours.out.combine(resolution_ch)
+        neighbors.out.combine(resolution_ch)
     )
 }
