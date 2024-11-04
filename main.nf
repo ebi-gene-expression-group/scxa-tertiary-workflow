@@ -2,6 +2,8 @@
 
 nextflow.enable.dsl=2
 
+params.neighbor_values = ['10', '100', '15', '20', '25', '3', '30', '5', '50']
+
 /*
  * Column_rearrange_1: Only keeps the specified columns and removes header
  */
@@ -319,15 +321,14 @@ process neighbours_for_umap {
     maxRetries 3
 
     input:
-        path anndata
-        each n_neighbours
+        tuple path(anndata), val(n_neighbours)
         val pca_param
     output:
-        path 'neighbours_*.h5ad'
+        path "neighbours_${n_neighbours}.h5ad"
     script:
     """
             scanpy-neighbors \
-                --n-neighbors \$n_neighbours \
+                --n-neighbors $n_neighbours \
                 --method 'umap' \
                 --metric 'euclidean' \
                 --random-state '0' \
@@ -337,7 +338,7 @@ process neighbours_for_umap {
                 $anndata \
                 --show-obj stdout \
                 --output-format anndata \
-                'neighbours_\${n_neighbours}.h5ad'
+                'neighbours_${n_neighbours}.h5ad'
 
     """
 }
@@ -539,7 +540,7 @@ workflow {
     batch_variable = Channel.value('')
     perplexity_values = Channel.value("1 5 10 15 20 25 30 35 40 45 50")
     resolution_values = Channel.value(['0.1', '0.3', '0.5', '0.7', '1.0', '2.0', '3.0', '4.0', '5.0'])
-    neighbor_values = Channel.value("10 100 15 20 25 3 30 5 50")
+    neighbors_ch = channel.fromList(params.neighbor_values)
 
 
     Column_rearrange_1(
@@ -588,8 +589,7 @@ workflow {
         pca_param
     )
     neighbours_for_umap(
-        harmony_batch.out,
-        neighbor_values,
+        harmony_batch.out.combine(neighbors_ch),
         pca_param
     )
     run_tsne(
