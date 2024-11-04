@@ -3,7 +3,7 @@
 nextflow.enable.dsl=2
 
 params.neighbor_values = ['10', '100', '15', '20', '25', '3', '30', '5', '50']
-
+params.perplexity_values = ['1', '5', '10', '15', '20', '25', '30', '35', '40', '45', '50']
 /*
  * Column_rearrange_1: Only keeps the specified columns and removes header
  */
@@ -459,18 +459,17 @@ process run_tsne {
     container 'quay.io/biocontainers/scanpy-scripts:1.1.6--pypyhdfd78af_0'
     
     input:
-        path anndata
+        tuple path(anndata), val(perplexity_values)
         val pca_param
-        each perplexity_values
     output:
-        path 'tsne_*.h5ad'
+        path 'tsne_${perplexity_values}.h5ad'
     script:
     """
             scanpy-run-tsne \
             --use-rep $pca_param \
             --export-embedding embeddings.tsv \
-            --perplexity \$perplexity_values \
-            --key-added 'perplexity_\$perplexity_values' \
+            --perplexity $perplexity_values \
+            --key-added 'perplexity_$perplexity_values' \
             --early-exaggeration '12.0' \
             --learning-rate '400.0' \
             --no-fast-tsne \
@@ -479,7 +478,7 @@ process run_tsne {
             $anndata \
             --show-obj stdout \
             --output-format anndata \
-            'tsne_\$perplexity_values.h5ad'
+            'tsne_${perplexity_values}.h5ad'
             # Not sure if following is needed
             # && mv 'embeddings_perplexity_1.tsv' embeddings.tsv
     """
@@ -541,7 +540,7 @@ workflow {
     perplexity_values = Channel.value("1 5 10 15 20 25 30 35 40 45 50")
     resolution_values = Channel.value(['0.1', '0.3', '0.5', '0.7', '1.0', '2.0', '3.0', '4.0', '5.0'])
     neighbors_ch = channel.fromList(params.neighbor_values)
-
+    perplexity_ch = channel.fromList(params.perplexity_values)
 
     Column_rearrange_1(
         genemeta, 
@@ -593,8 +592,7 @@ workflow {
         pca_param
     )
     run_tsne(
-        harmony_batch.out,
-        pca_param,
-        perplexity_values
+        harmony_batch.out.combine(perplexity_ch),
+        pca_param
     )
 }
