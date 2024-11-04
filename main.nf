@@ -464,7 +464,7 @@ process run_umap {
     container 'quay.io/biocontainers/scanpy-scripts:1.1.6--pypyhdfd78af_0'
     
     input:
-        each anndata
+        path anndata
     output:
         path 'umap_*.h5ad'
     script:
@@ -636,7 +636,7 @@ workflow {
     //    .filter { it.exitStatus == 0 }
 
     UMAPs_ch = run_umap(
-        neighbours_for_umap.out
+        neighbours_for_umap.out.flatten()
     )
     //UMAPs_ch
    //     .filter { it.exitStatus == 0 }
