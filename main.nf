@@ -350,6 +350,7 @@ process neighbours_for_umap {
     """
         scanpy-neighbors \
             --n-neighbors $n_neighbours \
+            --key-added 'neighbors_n_neighbors_${n_neighbours}' 
             --method 'umap' \
             --metric 'euclidean' \
             --random-state '0' \
