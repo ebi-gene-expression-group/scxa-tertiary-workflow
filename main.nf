@@ -635,7 +635,7 @@ workflow {
     TNSEs_ch
         .filter { it.exitStatus == 0 }
 
-    UMAPs_ch = run_tsne(
+    UMAPs_ch = run_umap(
         neighbours_for_umap.out,
         pca_param
     )
