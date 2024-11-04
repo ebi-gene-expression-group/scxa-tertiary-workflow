@@ -470,8 +470,9 @@ process run_umap {
         path "umap_*.h5ad"
     script:
     """
-            scanpy-run-umap \
-            --neighbors-key 'neighbors_$anndata' \
+        n_neighbor="${anndata/.h5ad/}"
+        scanpy-run-umap \
+            --neighbors-key 'neighbors_\$n_neighbor' \
             --key-added 'neighbors_$anndata' \
             --export-embedding embeddings.tsv \
             --n-components 2 \
