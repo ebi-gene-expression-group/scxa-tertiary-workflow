@@ -32,4 +32,4 @@ jobs:
         run: nextflow -version
 
       - name: check syntax in main.nf
-        run: nextflow -quiet validate main.nf
+        run: nextflow main.nf -preview || (echo "Syntax check failed. Please review the error message above." && exit 1)
