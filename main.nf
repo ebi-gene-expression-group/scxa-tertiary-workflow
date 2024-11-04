@@ -459,6 +459,8 @@ process filtered_cellgroup_markers {
 }
 
 process run_umap {
+    errorStrategy 'ignore'
+
     container 'quay.io/biocontainers/scanpy-scripts:1.1.6--pypyhdfd78af_0'
     
     input:
@@ -491,6 +493,8 @@ process run_umap {
 }
 
 process run_tsne {
+    errorStrategy 'ignore'
+    
     container 'quay.io/biocontainers/scanpy-scripts:1.1.6--pypyhdfd78af_0'
     
     input:
@@ -624,10 +628,19 @@ workflow {
         harmony_batch.out.combine(neighbors_ch),
         pca_param
     )
-    run_tsne(
+    TNSEs_ch = run_tsne(
         harmony_batch.out.combine(perplexity_ch),
         pca_param
     )
+    TNSEs_ch
+        .filter { it.exitStatus == 0 }
+
+    UMAPs_ch = run_tsne(
+        neighbours_for_umap.out,
+        pca_param
+    )
+    UMAPs_ch
+        .filter { it.exitStatus == 0 }
     find_clusters(
         neighbours.out.combine(resolution_ch)
     )
