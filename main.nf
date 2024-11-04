@@ -4,6 +4,8 @@ nextflow.enable.dsl=2
 
 params.neighbor_values = ['10', '100', '15', '20', '25', '3', '30', '5', '50']
 params.perplexity_values = ['1', '5', '10', '15', '20', '25', '30', '35', '40', '45', '50']
+params.resolution_values = ['0.1', '0.3', '0.5', '0.7', '1.0', '2.0', '3.0', '4.0', '5.0']
+    
 /*
  * Column_rearrange_1: Only keeps the specified columns and removes header
  */
@@ -327,29 +329,43 @@ process neighbours_for_umap {
         path "neighbours_${n_neighbours}.h5ad"
     script:
     """
-            scanpy-neighbors \
-                --n-neighbors $n_neighbours \
-                --method 'umap' \
-                --metric 'euclidean' \
-                --random-state '0' \
-                --use-rep $pca_param \
-                --n-pcs '50' \
-                --input-format 'anndata' \
-                $anndata \
-                --show-obj stdout \
-                --output-format anndata \
-                'neighbours_${n_neighbours}.h5ad'
+        scanpy-neighbors \
+            --n-neighbors $n_neighbours \
+            --method 'umap' \
+            --metric 'euclidean' \
+            --random-state '0' \
+            --use-rep $pca_param \
+            --n-pcs '50' \
+            --input-format 'anndata' \
+            $anndata \
+            --show-obj stdout \
+            --output-format anndata \
+            'neighbours_${n_neighbours}.h5ad'
 
     """
 }
 
 process find_clusters {
+    container 'quay.io/biocontainers/scanpy-scripts:1.1.6--pypyhdfd78af_0'
+
     input:
-
+        tuple path(anndata), val(resolution)
     output:
-
+        path "clusters_${resolution}.h5ad"
     script:
     """
+        scanpy-find-cluster louvain \
+        --neighbors-key 'neighbors' \
+        --key-added 'louvain_resolution_${resolution}' \
+        --resolution ${resolution} \
+        --random-state '1234' \
+        --directed \
+        --export-cluster output.tsv \
+        --input-format 'anndata' \
+        input.h5 \
+        --show-obj stdout \
+        --output-format anndata \
+        'clusters_${resolution}.h5ad'
     """
 }
 
@@ -537,10 +553,9 @@ workflow {
     pca_param = Channel.value('X_pca')
     celltype_field_param = Channel.value('NO_CELLTYPE_FIELD')
     batch_variable = Channel.value('')
-    perplexity_values = Channel.value("1 5 10 15 20 25 30 35 40 45 50")
-    resolution_values = Channel.value(['0.1', '0.3', '0.5', '0.7', '1.0', '2.0', '3.0', '4.0', '5.0'])
     neighbors_ch = channel.fromList(params.neighbor_values)
     perplexity_ch = channel.fromList(params.perplexity_values)
+    resolution_ch = channel.fromList(params.resolution_values)
 
     Column_rearrange_1(
         genemeta, 
@@ -594,5 +609,8 @@ workflow {
     run_tsne(
         harmony_batch.out.combine(perplexity_ch),
         pca_param
+    )
+    find_clusters(
+        neighbours.out.combine(resolution_ch)
     )
 }
