@@ -10,7 +10,6 @@ params.slotname = "louvain_resolution"
 params.clustering_slotname = params.resolution_values.collect { params.slotname + "_" + it }
 params.merged_group_slotname = params.clustering_slotname + params.celltype_field
 
-
 log.info """
 ===============================
 WORKFLOW PARAMETER VALUES
@@ -440,12 +439,28 @@ process build_list {
 }
 
 process find_markers {
+    errorStrategy 'ignore'
+    container 'quay.io/biocontainers/scanpy-scripts:1.1.6--pypyhdfd78af_0'
     input:
-
+	tuple path(anndata), val(merged_group_slotname)
     output:
-
+	path "markers_${merged_group_slotname}.h5ad"
     script:
     """
+	scanpy-find-markers \
+	--save diffexp.tsv \
+	--n-genes '100' \
+	--groupby '${merged_group_slotname}' \
+	--key-added 'markers_${merged_group_slotname}' \
+	--method 'wilcoxon' \
+	--use-raw  \
+	--reference 'rest' \
+	--filter-params 'min_in_group_fraction:0.0,max_out_group_fraction:1.0,min_fold_change:1.0'  \
+	--input-format 'anndata' \
+	$anndata  \
+	--show-obj stdout \
+	--output-format anndata \
+	'markers_${merged_group_slotname}.h5ad'
     """
 }
 
@@ -582,6 +597,7 @@ workflow {
     neighbors_ch = channel.fromList(params.neighbor_values)
     perplexity_ch = channel.fromList(params.perplexity_values)
     resolution_ch = channel.fromList(params.resolution_values)
+    merged_group_slotname_ch = Channel.fromList(params.merged_group_slotname)
 
     Column_rearrange_1(
         genemeta, 
@@ -646,5 +662,18 @@ workflow {
    //     .filter { it.exitStatus == 0 }
     find_clusters(
         neighbors.out.combine(resolution_ch)
+    )
+
+    // Combine the outputs of find_clusters and neighbors processes
+    combined_outputs = find_clusters.out.mix(neighbors.out)
+
+    processed_files = combined_outputs.map { file ->
+        // Extract the sample number from the file name
+        def sampleNumber = file.baseName.replaceFirst('clusters_', 'louvain_resolution_').replaceFirst('neighbors',params.celltype_field)
+        [file, sampleNumber] // Create a tuple with sample number and file
+    }
+
+    find_markers(
+	processed_files
     )
 }
