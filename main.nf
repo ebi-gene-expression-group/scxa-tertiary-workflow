@@ -138,7 +138,6 @@ process scanpy_filter_cells {
     
     input:
         path anndata
-        path genes
 
     output:
         path 'filtered_cell_anndata.h5ad'
@@ -621,13 +620,16 @@ workflow {
     )
     scanpy_filter_cells(
         scanpy_read_10x.out,
+    )
+    scanpy_filter_genes(
+        scanpy_filter_cells.out,
         Column_rearrange_1.out[0]
     )
     normalise_data(
-        scanpy_filter_cells.out
+        scanpy_filter_genes.out
     )
     normalise_internal_data(
-        scanpy_filter_cells.out
+        scanpy_filter_genes.out
     )
     find_variable_genes(
         normalise_internal_data.out,
