@@ -1,20 +1,17 @@
 name: nf-core linting
-
 on:
-#  push:
-#    branches:
-#      - main
-#  pull_request:
-#    branches:
-#      - main
+  push:
+    branches:
+      - main
+  pull_request:
+    branches:
+      - main
 
 jobs:
   lint:
     runs-on: ubuntu-latest
     steps:
-      - name: checkout repository
-        uses: actions/checkout@v2
-
+      - uses: actions/checkout@v2
       - uses: actions/setup-java@v2
         with:
           distribution: 'adopt'
@@ -28,8 +25,31 @@ jobs:
           mv nextflow $HOME/.local/bin/
           echo "$HOME/.local/bin" >> $GITHUB_PATH
 
+      - name: set up Python
+        uses: actions/setup-python@v2
+        with:
+          python-version: '3.x'
+
+      - name: install nf-core tools
+        run: |
+          python -m pip install --upgrade pip
+          pip install nf-core
+          
       - name: check Nextflow version
         run: nextflow -version
 
-      - name: check syntax in main.nf
-        run: nextflow main.nf -c .github/workflows/ci.config -preview || (echo "Syntax check failed. Please review the error message above." && exit 1)
+      # https://nf-co.re/tools/docs/latest/pipeline_lint_tests/
+      - name: create .nf-core.yml
+        run: |
+          cat << EOF > .nf-core.yml
+          repository_type: pipeline
+          lint:
+            actions_awsfulltest: False
+            actions_awstest: False
+            multiqc_config: False
+            schema_lint: False
+            schema_params: False
+          EOF
+
+      - name: run nf-core lint
+        run: nf-core pipelines lint --dir .
