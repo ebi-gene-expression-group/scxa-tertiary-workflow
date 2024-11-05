@@ -470,10 +470,12 @@ process run_umap {
         path "umap_*.h5ad"
     script:
     """
-        n_neighbor="${anndata/.h5ad/}"
-        scanpy-run-umap \
-            --neighbors-key 'neighbors_\$n_neighbor' \
-            --key-added 'neighbors_$anndata' \
+	VAR="$anndata"
+	n_number="\${VAR%.h5ad}"
+	echo \$n_number
+	scanpy-run-umap \
+            --neighbors-key "neighbors_n_\${n_number}" \
+            --key-added "neighbors_\${n_number}" \
             --export-embedding embeddings.tsv \
             --n-components 2 \
             --min-dist 0.5 \
@@ -487,7 +489,7 @@ process run_umap {
             $anndata \
             --show-obj stdout \
             --output-format anndata \
-            'umap_${anndata}.h5ad'  
+            "umap_\${n_number}.h5ad"  
             # Not sure if following is needed
             # && mv 'embeddings_neighbors_n_neighbors_100.tsv' embeddings.tsv
 
