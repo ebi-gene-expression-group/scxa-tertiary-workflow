@@ -46,144 +46,24 @@ else:
   sys.exit(1)
 del ad_s
 
+obs_sources = [file for file in os.listdir(source_dir) if file.startswith('obs_source_') and file.endswith('.h5')]
 
-ad_s = sc.read('obs_source_0.h5')
-if adata.n_obs == ad_s.n_obs and all(adata.obs_names == ad_s.obs_names):
-  keys_to_copy = (k for k in ad_s.obs.keys() if "louvain" in k)
-  for k_to_copy in keys_to_copy:
-    suffix=''
-    if k_to_copy in adata.obs:
-        suffix = "_0"
-
-    adata.obs[[k_to_copy+suffix]] = ad_s.obs[[k_to_copy]]
-    if k_to_copy in ad_s.uns.keys():
-      adata.uns[k_to_copy+suffix] = ad_s.uns[k_to_copy]
-else:
-  logging.error("Observation source 0 AnnData file is not compatible to be merged to main AnnData file, different cell names.")
-  sys.exit(1)
-del ad_s
-ad_s = sc.read('obs_source_1.h5')
-if adata.n_obs == ad_s.n_obs and all(adata.obs_names == ad_s.obs_names):
-  keys_to_copy = (k for k in ad_s.obs.keys() if "louvain" in k)
-  for k_to_copy in keys_to_copy:
-    suffix=''
-    if k_to_copy in adata.obs:
-        suffix = "_1"
-
-    adata.obs[[k_to_copy+suffix]] = ad_s.obs[[k_to_copy]]
-    if k_to_copy in ad_s.uns.keys():
-      adata.uns[k_to_copy+suffix] = ad_s.uns[k_to_copy]
-else:
-  logging.error("Observation source 1 AnnData file is not compatible to be merged to main AnnData file, different cell names.")
-  sys.exit(1)
-del ad_s
-ad_s = sc.read('obs_source_2.h5')
-if adata.n_obs == ad_s.n_obs and all(adata.obs_names == ad_s.obs_names):
-  keys_to_copy = (k for k in ad_s.obs.keys() if "louvain" in k)
-  for k_to_copy in keys_to_copy:
-    suffix=''
-    if k_to_copy in adata.obs:
-        suffix = "_2"
-
-    adata.obs[[k_to_copy+suffix]] = ad_s.obs[[k_to_copy]]
-    if k_to_copy in ad_s.uns.keys():
-      adata.uns[k_to_copy+suffix] = ad_s.uns[k_to_copy]
-else:
-  logging.error("Observation source 2 AnnData file is not compatible to be merged to main AnnData file, different cell names.")
-  sys.exit(1)
-del ad_s
-ad_s = sc.read('obs_source_3.h5')
-if adata.n_obs == ad_s.n_obs and all(adata.obs_names == ad_s.obs_names):
-  keys_to_copy = (k for k in ad_s.obs.keys() if "louvain" in k)
-  for k_to_copy in keys_to_copy:
-    suffix=''
-    if k_to_copy in adata.obs:
-        suffix = "_3"
-
-    adata.obs[[k_to_copy+suffix]] = ad_s.obs[[k_to_copy]]
-    if k_to_copy in ad_s.uns.keys():
-      adata.uns[k_to_copy+suffix] = ad_s.uns[k_to_copy]
-else:
-  logging.error("Observation source 3 AnnData file is not compatible to be merged to main AnnData file, different cell names.")
-  sys.exit(1)
-del ad_s
-ad_s = sc.read('obs_source_4.h5')
-if adata.n_obs == ad_s.n_obs and all(adata.obs_names == ad_s.obs_names):
-  keys_to_copy = (k for k in ad_s.obs.keys() if "louvain" in k)
-  for k_to_copy in keys_to_copy:
-    suffix=''
-    if k_to_copy in adata.obs:
-        suffix = "_4"
-
-    adata.obs[[k_to_copy+suffix]] = ad_s.obs[[k_to_copy]]
-    if k_to_copy in ad_s.uns.keys():
-      adata.uns[k_to_copy+suffix] = ad_s.uns[k_to_copy]
-else:
-  logging.error("Observation source 4 AnnData file is not compatible to be merged to main AnnData file, different cell names.")
-  sys.exit(1)
-del ad_s
-ad_s = sc.read('obs_source_5.h5')
-if adata.n_obs == ad_s.n_obs and all(adata.obs_names == ad_s.obs_names):
-  keys_to_copy = (k for k in ad_s.obs.keys() if "louvain" in k)
-  for k_to_copy in keys_to_copy:
-    suffix=''
-    if k_to_copy in adata.obs:
-        suffix = "_5"
-
-    adata.obs[[k_to_copy+suffix]] = ad_s.obs[[k_to_copy]]
-    if k_to_copy in ad_s.uns.keys():
-      adata.uns[k_to_copy+suffix] = ad_s.uns[k_to_copy]
-else:
-  logging.error("Observation source 5 AnnData file is not compatible to be merged to main AnnData file, different cell names.")
-  sys.exit(1)
-del ad_s
-ad_s = sc.read('obs_source_6.h5')
-if adata.n_obs == ad_s.n_obs and all(adata.obs_names == ad_s.obs_names):
-  keys_to_copy = (k for k in ad_s.obs.keys() if "louvain" in k)
-  for k_to_copy in keys_to_copy:
-    suffix=''
-    if k_to_copy in adata.obs:
-        suffix = "_6"
-
-    adata.obs[[k_to_copy+suffix]] = ad_s.obs[[k_to_copy]]
-    if k_to_copy in ad_s.uns.keys():
-      adata.uns[k_to_copy+suffix] = ad_s.uns[k_to_copy]
-else:
-  logging.error("Observation source 6 AnnData file is not compatible to be merged to main AnnData file, different cell names.")
-  sys.exit(1)
-del ad_s
-ad_s = sc.read('obs_source_7.h5')
-if adata.n_obs == ad_s.n_obs and all(adata.obs_names == ad_s.obs_names):
-  keys_to_copy = (k for k in ad_s.obs.keys() if "louvain" in k)
-  for k_to_copy in keys_to_copy:
-    suffix=''
-    if k_to_copy in adata.obs:
-        suffix = "_7"
-
-    adata.obs[[k_to_copy+suffix]] = ad_s.obs[[k_to_copy]]
-    if k_to_copy in ad_s.uns.keys():
-      adata.uns[k_to_copy+suffix] = ad_s.uns[k_to_copy]
-else:
-  logging.error("Observation source 7 AnnData file is not compatible to be merged to main AnnData file, different cell names.")
-  sys.exit(1)
-del ad_s
-ad_s = sc.read('obs_source_8.h5')
-if adata.n_obs == ad_s.n_obs and all(adata.obs_names == ad_s.obs_names):
-  keys_to_copy = (k for k in ad_s.obs.keys() if "louvain" in k)
-  for k_to_copy in keys_to_copy:
-    suffix=''
-    if k_to_copy in adata.obs:
-        suffix = "_8"
-
-    adata.obs[[k_to_copy+suffix]] = ad_s.obs[[k_to_copy]]
-    if k_to_copy in ad_s.uns.keys():
-      adata.uns[k_to_copy+suffix] = ad_s.uns[k_to_copy]
-else:
-  logging.error("Observation source 8 AnnData file is not compatible to be merged to main AnnData file, different cell names.")
-  sys.exit(1)
-del ad_s
-
-
+for idx, obs_source_file in enumerate(sorted(obs_sources)):
+    ad_s = sc.read(os.path.join(source_dir, obs_source_file))
+    if adata.n_obs == ad_s.n_obs and all(adata.obs_names == ad_s.obs_names):
+      keys_to_copy = (k for k in ad_s.obs.keys() if "louvain" in k)
+      for k_to_copy in keys_to_copy:
+        suffix=''
+        if k_to_copy in adata.obs:
+            suffix = f"_{idx}"
+    
+        adata.obs[[k_to_copy+suffix]] = ad_s.obs[[k_to_copy]]
+        if k_to_copy in ad_s.uns.keys():
+          adata.uns[k_to_copy+suffix] = ad_s.uns[k_to_copy]
+    else:
+      logging.error(f"Observation source {idx} AnnData file is not compatible to be merged to main AnnData file, different cell names.")
+      sys.exit(1)
+    del ad_s
 
 
 embedding_sources = [file for file in os.listdir(source_dir) if file.startswith('embedding_source_') and file.endswith('.h5')]
