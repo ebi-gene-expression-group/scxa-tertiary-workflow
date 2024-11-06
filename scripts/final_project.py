@@ -82,7 +82,7 @@ for idx, embedding_file in enumerate(sorted(embedding_sources)):
           keys_to_copy = (k for k in ad_s.obsm.keys() if "umap" in k)
           for k_to_copy in keys_to_copy:
               suffix = ''
-              if k_to_copy in adata.obsm
+              if k_to_copy in adata.obsm:
                   suffix = f"_{idx}"
               adata.obsm[k_to_copy + suffix] = ad_s.obsm[k_to_copy]
     else:
