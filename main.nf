@@ -574,6 +574,8 @@ process merge_embeddings {
 
 
 process make_project_file {
+    container 'quay.io/biocontainers/scanpy-scripts:1.1.6--pypyhdfd78af_0'
+
     input:
 	path neighbors
 	path scanpy_read_10x
