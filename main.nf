@@ -335,9 +335,6 @@ process neighbors {
 process neighbors_for_umap {
     container 'quay.io/biocontainers/scanpy-scripts:1.1.6--pypyhdfd78af_0'
 
-    errorStrategy { task.exitStatus in 137..140 ? 'retry' : 'terminate' }
-    memory { 4.GB * task.attempt }
-    maxRetries 3
 
     input:
         tuple path(anndata), val(n_neighbors)
