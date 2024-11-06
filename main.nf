@@ -577,34 +577,36 @@ process make_project_file {
     container 'quay.io/biocontainers/scanpy-scripts:1.1.6--pypyhdfd78af_0'
 
     input:
-	path neighbors
-	path scanpy_read_10x
-	path filter_genes
-	path normalise_data
-	path find_markers
-	path TNSEs_mix_UMAPs
+        path neighbors
+        path scanpy_read_10x
+        path filter_genes
+        path normalise_data
+        path find_markers
+        path TNSEs_mix_UMAPs
     output:
-	path "output.h5"
+        path "output.h5"
     script:
     """
-	ln -s $neighbors input.h5
-	ln -s $scanpy_read_10x r_source.h5
-		ln -s '$filter_genes' x_source_0.h5
-		ln -s '$normalise_data' x_source_1.h5
-	count=0
-	for i in $find_markers
-	do
-		ln -s "\${i}" obs_source_\${count}.h5
-		ln -s "\${i}" uns_source_\${count}.h5
-		((count++))
-	done
-	count=0
-	for i in $TNSEs_mix_UMAPs
-	do
-		ln -s "\${i}" embedding_source_\${count}.h5
-		((count++))
-	done
-	python scripts/final_project.py
+        ln -s $neighbors input.h5
+        ln -s $scanpy_read_10x r_source.h5
+        ln -s '$filter_genes' x_source_0.h5
+        ln -s '$normalise_data' x_source_1.h5
+        count=0
+        for i in $find_markers
+        do
+                ln -sf "\${i}" obs_source_\${count}.h5
+                ln -sf "\${i}" uns_source_\${count}.h5
+                count=\$((count + 1))
+                echo "\${count}"
+        done
+        count=0
+        for i in $TNSEs_mix_UMAPs
+        do
+                ln -sf "\${i}" embedding_source_\${count}.h5
+                count=\$((count + 1))
+                echo "\${count}"
+        done
+        python ${projectDir}/scripts/final_project.py
     """
 }
 
