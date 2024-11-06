@@ -2,6 +2,7 @@
 
 nextflow.enable.dsl=2
 
+params.dir_path = "."
 params.celltype_field = 'NO_CELLTYPE_FIELD'
 params.neighbor_values = ['10', '100', '15', '20', '25', '3', '30', '5', '50']
 params.perplexity_values = ['1', '5', '10', '15', '20', '25', '30', '35', '40', '45', '50']
@@ -14,6 +15,7 @@ log.info """
 ===============================
 WORKFLOW PARAMETER VALUES
 ===============================
+EXP dir path: ${params.dir_path}
 celltype_field: ${params.celltype_field}
 neighbor_values: ${params.neighbor_values}
 perplexity_values: ${params.perplexity_values}
@@ -610,11 +612,11 @@ process make_project_file {
 workflow {
 
     // Create input channel (single file via CLI parameter)
-    genemeta = Channel.fromPath('genes_metadata.tsv')
-    genes = Channel.fromPath('genes.tsv')
-    barcodes = Channel.fromPath('barcodes.tsv')
-    matrix = Channel.fromPath('matrix.mtx')
-    cellmeta = Channel.fromPath('cell_metadata.tsv')
+    genemeta = Channel.fromPath("${params.dir_path}/genes_metadata.tsv")
+    genes = Channel.fromPath("${params.dir_path}/genes.tsv")
+    barcodes = Channel.fromPath("${params.dir_path}/barcodes.tsv")
+    matrix = Channel.fromPath("${params.dir_path}/matrix.mtx")
+    cellmeta = Channel.fromPath("${params.dir_path}/cell_metadata.tsv")
     pca_param = Channel.value('X_pca')
     batch_variable = Channel.value('')
     neighbors_ch = channel.fromList(params.neighbor_values)
