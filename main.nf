@@ -2,6 +2,7 @@
 
 nextflow.enable.dsl=2
 
+params.technology = "plate"
 params.dir_path = "."
 params.result_dir_path = params.dir_path + "/results"
 params.celltype_field = 'NO_CELLTYPE_FIELD'
@@ -681,7 +682,7 @@ workflow {
         genemeta
     )
 
-    if ( params.is_droplet ) {
+    if ( params.technology == "droplet" ) {
         SCRUBLET_ch = scanpy_multiplet_scrublet(
             scanpy_read_10x.out,
             batch_variable
