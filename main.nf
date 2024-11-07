@@ -146,12 +146,12 @@ process scanpy_multiplet_scrublet {
         val batch_variable
 
     output:
-        path 'anndata.h5ad'
+        path 'scrublet.h5ad'
 
     script:
     """
         echo $batch_variable > scanpy_multiplet_scrublet.test
-        cp $anndata anndata.h5ad
+        cp $anndata scrublet.h5ad
     """
 }
 
@@ -699,7 +699,7 @@ workflow {
             scanpy_read_10x.out
         )
     }
-    
+
     scanpy_filter_genes(
         scanpy_filter_cells.out,
         Column_rearrange_1.out[0]
