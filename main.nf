@@ -108,6 +108,38 @@ process mergeGeneFiles {
     """
 }
 
+process scanpy_multiplet_scrublet {
+    container 'quay.io/biocontainers/scanpy-scripts:1.1.6--pypyhdfd78af_0'
+    
+    input:
+        path anndata
+        val batch_variable
+
+    output:
+        path 'anndata.h5ad'
+
+    script:
+    """
+        echo $batch_variable > scanpy_multiplet_scrublet.test
+        cp $anndata anndata.h5ad
+    """
+}
+
+process scanpy_plot_scrublet {
+    container 'quay.io/biocontainers/scanpy-scripts:1.1.6--pypyhdfd78af_0'
+    
+    input:
+        path anndata
+
+    output:
+        path 'scanpy_plot_scrublet.test'
+
+    script:
+    """
+        echo $anndata > scanpy_plot_scrublet.test
+    """
+}
+
 process scanpy_read_10x {
     container 'quay.io/biocontainers/scanpy-scripts:1.1.6--pypyhdfd78af_0'
     
@@ -648,6 +680,27 @@ workflow {
         cellmeta,
         genemeta
     )
+
+    if ( params.is_droplet ) {
+        SCRUBLET_ch = scanpy_multiplet_scrublet(
+            scanpy_read_10x.out,
+            batch_variable
+        )
+        scanpy_plot_scrublet(
+            SCRUBLET_ch
+        )
+        scanpy_filter_cells(
+            SCRUBLET_ch,
+            Column_rearrange_1.out[0]
+        )
+    }
+    else {
+        scanpy_filter_cells(
+            scanpy_read_10x.out,
+            Column_rearrange_1.out[0]
+        )
+    }
+
     scanpy_filter_cells(
         scanpy_read_10x.out,
     )
