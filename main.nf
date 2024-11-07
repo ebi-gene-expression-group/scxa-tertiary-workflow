@@ -109,6 +109,35 @@ process mergeGeneFiles {
     """
 }
 
+process scanpy_read_10x {
+    container 'quay.io/biocontainers/scanpy-scripts:1.1.6--pypyhdfd78af_0'
+    
+    input:
+        path matrix
+        path genes
+        path barcodes
+        path cellmeta
+        path genemeta
+
+    output:
+        path 'anndata.h5ad'
+
+    script:
+    """
+        #ln -s $matrix matrix.mtx
+        ln -s $genes genes.tsv
+        #ln -s $barcodes barcodes.tsv
+        
+        scanpy-read-10x --input-10x-mtx ./ \
+        --var-names 'gene_ids' \
+        --extra-obs $cellmeta \
+        --extra-var $genemeta \
+        --show-obj stdout \
+        --output-format anndata \
+        'anndata.h5ad'
+    """
+}
+
 process scanpy_multiplet_scrublet {
     container 'quay.io/biocontainers/scanpy-scripts:1.1.6--pypyhdfd78af_0'
     
@@ -138,35 +167,6 @@ process scanpy_plot_scrublet {
     script:
     """
         echo $anndata > scanpy_plot_scrublet.test
-    """
-}
-
-process scanpy_read_10x {
-    container 'quay.io/biocontainers/scanpy-scripts:1.1.6--pypyhdfd78af_0'
-    
-    input:
-        path matrix
-        path genes
-        path barcodes
-        path cellmeta
-        path genemeta
-
-    output:
-        path 'anndata.h5ad'
-
-    script:
-    """
-        #ln -s $matrix matrix.mtx
-        ln -s $genes genes.tsv
-        #ln -s $barcodes barcodes.tsv
-        
-        scanpy-read-10x --input-10x-mtx ./ \
-        --var-names 'gene_ids' \
-        --extra-obs $cellmeta \
-        --extra-var $genemeta \
-        --show-obj stdout \
-        --output-format anndata \
-        'anndata.h5ad'
     """
 }
 
@@ -691,20 +691,15 @@ workflow {
             SCRUBLET_ch
         )
         scanpy_filter_cells(
-            SCRUBLET_ch,
-            Column_rearrange_1.out[0]
+            SCRUBLET_ch
         )
     }
     else {
         scanpy_filter_cells(
-            scanpy_read_10x.out,
-            Column_rearrange_1.out[0]
+            scanpy_read_10x.out
         )
     }
-
-    scanpy_filter_cells(
-        scanpy_read_10x.out,
-    )
+    
     scanpy_filter_genes(
         scanpy_filter_cells.out,
         Column_rearrange_1.out[0]
