@@ -3,6 +3,7 @@
 nextflow.enable.dsl=2
 
 params.technology = "plate"
+params.batch_variable = ""
 params.dir_path = "."
 params.result_dir_path = params.dir_path + "/results"
 params.celltype_field = 'NO_CELLTYPE_FIELD'
@@ -152,7 +153,7 @@ process scanpy_multiplet_scrublet {
     """
         scanpy-cli multiplet scrublet \
         --input-format 'anndata' \
-        --output-format 'anndata_h5ad' \
+        --output-format 'anndata' \
         --batch-key "${params.batch_variable}" \
         $anndata \
         scrublet.h5ad
