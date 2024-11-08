@@ -150,8 +150,12 @@ process scanpy_multiplet_scrublet {
 
     script:
     """
-        echo $batch_variable > scanpy_multiplet_scrublet.test
-        cp $anndata scrublet.h5ad
+        scanpy-cli multiplet scrublet \
+        --input-format 'anndata' \
+        --output-format 'anndata_h5ad' \
+        --batch-key "${params.batch_variable}" \
+        $anndata \
+        scrublet.h5ad
     """
 }
 
@@ -162,11 +166,16 @@ process scanpy_plot_scrublet {
         path anndata
 
     output:
-        path 'scanpy_plot_scrublet.test'
+        path 'scrublet.png'
 
     script:
     """
-        echo $anndata > scanpy_plot_scrublet.test
+        scanpy-cli plot scrublet \
+        --input-format "anndata" \
+        --scale-hist-obs "linear" \
+        --scale-hist-sim "linear" \
+        $anndata \
+        scrublet.png
     """
 }
 
