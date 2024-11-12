@@ -151,12 +151,20 @@ process scanpy_multiplet_scrublet {
 
     script:
     """
-        scanpy-cli multiplet scrublet \
-        --input-format 'anndata' \
-        --output-format 'anndata' \
-        --batch-key "${params.batch_variable}" \
-        $anndata \
-        scrublet.h5ad
+        if [ "${params.batch_variable}" -eq "" ]; do
+            scanpy-cli multiplet scrublet \
+            --input-format 'anndata' \
+            --output-format 'anndata' \
+            $anndata \
+            scrublet.h5ad
+        else
+            scanpy-cli multiplet scrublet \
+            --input-format 'anndata' \
+            --output-format 'anndata' \
+            --batch-key "${params.batch_variable}" \
+            $anndata \
+            scrublet.h5ad
+        fi
     """
 }
 
