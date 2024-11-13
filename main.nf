@@ -212,6 +212,8 @@ process scanpy_filter_cells {
 }
 
 process scanpy_filter_genes {
+    publishDir params.result_dir_path, mode: 'copy', pattern: '(matrix\\.mtx|barcodes\\.tsv|genes\\.tsv)'
+
     container 'quay.io/biocontainers/scanpy-scripts:1.1.6--pypyhdfd78af_0'
 
     input:
@@ -236,6 +238,7 @@ process scanpy_filter_genes {
 }
 
 process normalise_data {
+    publishDir params.result_dir_path, mode: 'copy', pattern: '(matrix\\.mtx|barcodes\\.tsv|genes\\.tsv)'
     container 'quay.io/biocontainers/scanpy-scripts:1.1.6--pypyhdfd78af_0'
 
     input:
@@ -418,6 +421,7 @@ process neighbors_for_umap {
 }
 
 process find_clusters {
+    publishDir params.result_dir_path, mode: 'copy', pattern: '(clusters\\.tsv)'
     container 'quay.io/biocontainers/scanpy-scripts:1.1.6--pypyhdfd78af_0'
 
     input:
@@ -438,6 +442,7 @@ process find_clusters {
         --show-obj stdout \
         --output-format anndata \
         'clusters_${resolution}.h5ad'
+	&& mv 'output.tsv' 'clusters_${resolution}.tsv'
     """
 }
 
@@ -507,6 +512,7 @@ process restore_unscaled {
 }
 
 process find_markers {
+    publishDir params.result_dir_path, mode: 'copy', pattern: '(markers_\\.tsv)'
     errorStrategy 'ignore'
     container 'quay.io/biocontainers/scanpy-scripts:1.1.6--pypyhdfd78af_0'
     input:
@@ -516,7 +522,7 @@ process find_markers {
     script:
     """
 	scanpy-find-markers \
-	--save diffexp.tsv \
+	--save 'markers_${merged_group_slotname}.tsv' \
 	--n-genes '100' \
 	--groupby '${merged_group_slotname}' \
 	--key-added 'markers_${merged_group_slotname}' \
@@ -543,6 +549,7 @@ process filtered_cellgroup_markers {
 }
 
 process run_umap {
+    publishDir params.result_dir_path, mode: 'copy', pattern: '(embeddings\\.tsv)'
     //errorStrategy 'ignore'
 
     container 'quay.io/biocontainers/scanpy-scripts:1.1.6--pypyhdfd78af_0'
@@ -574,12 +581,13 @@ process run_umap {
             --output-format anndata \
             "umap_\${n_number}.h5ad"  
             # Not sure if following is needed
-            # && mv 'embeddings_neighbors_n_neighbors_100.tsv' embeddings.tsv
+            # && mv 'embeddings_neighbors_n_neighbors_${n_number}.tsv' embeddings.tsv
 
     """
 }
 
 process run_tsne {
+    publishDir params.result_dir_path, mode: 'copy', pattern: '(embeddings_perplexity\\.tsv)'
     //errorStrategy 'ignore'
     
     container 'quay.io/biocontainers/scanpy-scripts:1.1.6--pypyhdfd78af_0'
@@ -606,7 +614,7 @@ process run_tsne {
             --output-format anndata \
             'tsne_${perplexity_values}.h5ad'
             # Not sure if following is needed
-            # && mv 'embeddings_perplexity_1.tsv' embeddings.tsv
+            && mv 'embeddings_perplexity_${perplexity_values}.tsv' embeddings.tsv
     """
 }
 
