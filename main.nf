@@ -491,6 +491,21 @@ process build_list {
     """
 }
 
+process restore_unscaled {
+    container 'quay.io/biocontainers/scanpy-scripts:1.1.6--pypyhdfd78af_0'
+    input:
+	tuple path(anndata), path(normalise_internal_data)
+    output:
+	path "restore_unscaled_output_${merged_group_slotname}.h5"
+    script:
+    """
+	ln -s $anndata input.h5
+	ln -s $normalise_internal_data r_source.h5
+	python ${projectDir}/scripts/restore_unscaled.py
+	mv output.h5 'restore_unscaled_output_${merged_group_slotname}.h5'
+    """
+}
+
 process find_markers {
     errorStrategy 'ignore'
     container 'quay.io/biocontainers/scanpy-scripts:1.1.6--pypyhdfd78af_0'
@@ -770,15 +785,24 @@ workflow {
     // Combine the outputs of find_clusters and neighbors processes
     combined_outputs = find_clusters.out.mix(neighbors.out)
 
-    processed_files = combined_outputs.map { file ->
-        // Extract the sample number from the file name
-        def sampleNumber = file.baseName.replaceFirst('clusters_', 'louvain_resolution_').replaceFirst('neighbors',params.celltype_field)
-        [file, sampleNumber] // Create a tuple with sample number and file
+    if ( params.technology == "droplet" ) {
+        restore_unscaled
+	    combined_outputs.combine(normalise_internal_data.out)
+    	)
+	restore_unscaled_files = restore_unscaled.out.map { file ->
+	    // Extract the sample number from the file name
+	    def sampleNumber = file.baseName.replaceFirst('restore_unscaled_output_', 'louvain_resolution_').replaceFirst('neighbors',params.celltype_field)
+	    [file, sampleNumber] // Create a tuple with sample number and file
+	}
+	find_markers(
+	    restore_unscaled_files
+    	)
     }
-
-    find_markers(
-	processed_files
-    )
+    else {
+        find_markers(
+	    processed_files
+    	)
+    }
     make_project_file(
 	neighbors.out,
 	scanpy_read_10x.out,
