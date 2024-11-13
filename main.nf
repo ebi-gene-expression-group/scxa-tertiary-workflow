@@ -581,7 +581,7 @@ process run_umap {
             --output-format anndata \
             "umap_\${n_number}.h5ad"  
             # Not sure if following is needed
-            # && mv 'embeddings_neighbors_n_neighbors_${n_number}.tsv' embeddings.tsv
+            # && mv "embeddings_neighbors_n_neighbors_\${n_number}.tsv" embeddings.tsv
 
     """
 }
