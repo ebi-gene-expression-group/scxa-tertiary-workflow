@@ -803,7 +803,7 @@ workflow {
          // Extract the sample number from the file name
          def sampleNumber = file.baseName.replaceFirst('clusters_', 'louvain_resolution_').replaceFirst('neighbors',params.celltype_field)
          [file, sampleNumber] // Create a tuple with sample number and file
-
+	}
         find_markers(
 	    processed_files
     	)
