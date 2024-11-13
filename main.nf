@@ -193,6 +193,7 @@ process scanpy_filter_cells {
     
     input:
         path anndata
+        val category
 
     output:
         path 'filtered_cell_anndata.h5ad'
@@ -205,7 +206,8 @@ process scanpy_filter_cells {
         --input-format 'anndata' $anndata \
         --show-obj stdout \
         --output-format anndata 'filtered_cell_anndata.h5ad' \
-        --export-mtx ./
+        --export-mtx ./ \
+        $category
     """
 }
 
@@ -709,12 +711,14 @@ workflow {
             SCRUBLET_ch
         )
         scanpy_filter_cells(
-            SCRUBLET_ch
+            SCRUBLET_ch,
+            "--category predicted_doublet False"
         )
     }
     else {
         scanpy_filter_cells(
-            scanpy_read_10x.out
+            scanpy_read_10x.out,
+            ""
         )
     }
 
