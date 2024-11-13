@@ -169,6 +169,7 @@ process scanpy_multiplet_scrublet {
 }
 
 process scanpy_plot_scrublet {
+    publishDir params.result_dir_path, mode: 'copy', pattern: '(scrublet.png)'
     container 'quay.io/biocontainers/scanpy-scripts:1.1.6--pypyhdfd78af_0'
     
     input:
