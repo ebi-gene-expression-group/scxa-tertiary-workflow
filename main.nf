@@ -791,7 +791,7 @@ workflow {
     	)
 	restore_unscaled_files = restore_unscaled.out.map { file ->
 	    // Extract the sample number from the file name
-	    def sampleNumber = file.baseName.replaceFirst('restore_unscaled_output_', 'louvain_resolution_').replaceFirst('neighbors',params.celltype_field)
+	    def sampleNumber = file.baseName.replaceFirst('restore_unscaled_output_', '').replaceFirst('clusters_', 'louvain_resolution_').replaceFirst('neighbors',params.celltype_field).replaceFirst('neighbors',params.celltype_field).replaceFirst('.h5ad','')
 	    [file, sampleNumber] // Create a tuple with sample number and file
 	}
 	find_markers(
