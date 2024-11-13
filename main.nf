@@ -786,7 +786,7 @@ workflow {
     combined_outputs = find_clusters.out.mix(neighbors.out)
 
     if ( params.technology == "droplet" ) {
-        restore_unscaled
+        restore_unscaled (
 	    combined_outputs.combine(normalise_internal_data.out)
     	)
 	restore_unscaled_files = restore_unscaled.out.map { file ->
