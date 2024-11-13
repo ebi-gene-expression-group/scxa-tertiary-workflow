@@ -442,7 +442,8 @@ process find_clusters {
         --show-obj stdout \
         --output-format anndata \
         'clusters_${resolution}.h5ad'
-	&& mv 'output.tsv' 'clusters_${resolution}.tsv'
+	
+	mv 'output.tsv' 'clusters_${resolution}.tsv'
     """
 }
 
@@ -614,7 +615,7 @@ process run_tsne {
             --output-format anndata \
             'tsne_${perplexity_values}.h5ad'
             # Not sure if following is needed
-            && mv 'embeddings_perplexity_${perplexity_values}.tsv' embeddings.tsv
+            # && mv 'embeddings_perplexity_${perplexity_values}.tsv' embeddings.tsv
     """
 }
 
