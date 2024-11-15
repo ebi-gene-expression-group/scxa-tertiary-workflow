@@ -19,6 +19,7 @@ log.info """
 WORKFLOW PARAMETER VALUES
 ===============================
 EXP dir path: ${params.dir_path}
+Selected technology: ${params.technology}
 Results results_dir_path: ${params.result_dir_path}
 celltype_field: ${params.celltype_field}
 neighbor_values: ${params.neighbor_values}
