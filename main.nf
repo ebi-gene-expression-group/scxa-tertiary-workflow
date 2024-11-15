@@ -571,7 +571,8 @@ process filtered_cellgroup_markers {
 
 process run_umap {
     publishDir "${params.result_dir_path}/run_umap", mode: 'copy', pattern: 'embeddings_neighbors_neighbors_*.tsv'
-    //errorStrategy 'ignore'
+
+    errorStrategy 'ignore'
 
     container 'quay.io/biocontainers/scanpy-scripts:1.1.6--pypyhdfd78af_0'
     
@@ -612,7 +613,8 @@ process run_umap {
 
 process run_tsne {
     publishDir "${params.result_dir_path}/run_tsne", mode: 'copy', pattern: 'embeddings_perplexity_*\\.tsv'
-    //errorStrategy 'ignore'
+
+    errorStrategy 'ignore'
     
     container 'quay.io/biocontainers/scanpy-scripts:1.1.6--pypyhdfd78af_0'
     
@@ -642,26 +644,6 @@ process run_tsne {
             'tsne_${perplexity_values}.h5ad'
             # Not sure if following is needed
             # && mv 'embeddings_perplexity_${perplexity_values}.tsv' embeddings.tsv
-    """
-}
-
-process filter_failed_umap {
-    input:
-
-    output:
-
-    script:
-    """
-    """
-}
-
-process filer_failed_tsne {
-    input:
-
-    output:
-
-    script:
-    """
     """
 }
 
