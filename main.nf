@@ -464,7 +464,7 @@ process restore_unscaled {
     container 'quay.io/biocontainers/scanpy-scripts:1.1.6--pypyhdfd78af_0'
 
     input:
-	tuple path(anndata), path(normalise_internal_data
+	tuple path(anndata), path(normalise_internal_data)
 
     output:
 	path "restore_unscaled_output_${anndata}.h5"
