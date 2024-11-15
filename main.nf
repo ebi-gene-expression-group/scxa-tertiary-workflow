@@ -470,26 +470,6 @@ process meta_vars {
     """
 }
 
-process clustering_slotnames {
-    input:
-
-    output:
-
-    script:
-    """
-    """
-}
-
-process merge_group_slotnames {
-    input:
-
-    output:
-
-    script:
-    """
-    """
-}
-
 process restore_unscaled {
     container 'quay.io/biocontainers/scanpy-scripts:1.1.6--pypyhdfd78af_0'
 
