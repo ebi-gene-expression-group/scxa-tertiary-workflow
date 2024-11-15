@@ -647,18 +647,6 @@ process run_tsne {
     """
 }
 
-process merge_embeddings {
-    input:
-
-    output:
-
-    script:
-    """
-    """
-}
-
-
-
 process make_project_file {
     publishDir params.result_dir_path, mode: 'copy'
 
