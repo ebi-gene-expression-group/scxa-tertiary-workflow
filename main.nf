@@ -490,26 +490,6 @@ process merge_group_slotnames {
     """
 }
 
-process merge_collections {
-    input:
-
-    output:
-
-    script:
-    """
-    """
-}
-
-process build_list {
-    input:
-
-    output:
-
-    script:
-    """
-    """
-}
-
 process restore_unscaled {
     container 'quay.io/biocontainers/scanpy-scripts:1.1.6--pypyhdfd78af_0'
 
