@@ -213,8 +213,9 @@ process scanpy_filter_cells {
 }
 
 process scanpy_filter_genes {
-    publishDir params.result_dir_path, mode: 'copy', pattern: '(matrix\\.mtx|barcodes\\.tsv|genes\\.tsv)'
-
+    publishDir "${params.result_dir_path}/scanpy_filter_genes", mode: 'copy', pattern: 'matrix.mtx'
+    publishDir "${params.result_dir_path}/scanpy_filter_genes", mode: 'copy', pattern: 'barcodes.tsv'
+    publishDir "${params.result_dir_path}/scanpy_filter_genes", mode: 'copy', pattern: 'genes.tsv'
     container 'quay.io/biocontainers/scanpy-scripts:1.1.6--pypyhdfd78af_0'
 
     input:
@@ -223,6 +224,9 @@ process scanpy_filter_genes {
 
     output:
         path 'filtered_gene_anndata.h5ad'
+        path 'matrix.mtx'
+        path 'barcodes.tsv'
+        path 'genes.tsv'
 
     script:
     """
@@ -239,14 +243,19 @@ process scanpy_filter_genes {
 }
 
 process normalise_data {
-    publishDir params.result_dir_path, mode: 'copy', pattern: '(matrix\\.mtx|barcodes\\.tsv|genes\\.tsv)'
+    publishDir "${params.result_dir_path}/normalise_data", mode: 'copy', pattern: 'matrix.mtx'
+    publishDir "${params.result_dir_path}/normalise_data", mode: 'copy', pattern: 'barcodes.tsv'
+    publishDir "${params.result_dir_path}/normalise_data", mode: 'copy', pattern: 'genes.tsv'
     container 'quay.io/biocontainers/scanpy-scripts:1.1.6--pypyhdfd78af_0'
 
     input:
         path anndata
 
     output:
-        path 'normalised_anndata.h5ad'
+	path 'normalised_anndata.h5ad'
+	path 'matrix.mtx'
+	path 'barcodes.tsv'
+	path 'genes.tsv'
 
     script:
     """
@@ -422,13 +431,15 @@ process neighbors_for_umap {
 }
 
 process find_clusters {
-    publishDir params.result_dir_path, mode: 'copy', pattern: '(clusters\\.tsv)'
+    publishDir "${params.result_dir_path}/find_clusters", mode: 'copy', pattern: 'clusters_*.tsv'
     container 'quay.io/biocontainers/scanpy-scripts:1.1.6--pypyhdfd78af_0'
 
     input:
         tuple path(anndata), val(resolution)
     output:
         path "clusters_${resolution}.h5ad"
+	path "clusters_${resolution}.tsv"
+
     script:
     """
         scanpy-find-cluster louvain \
@@ -500,10 +511,13 @@ process build_list {
 
 process restore_unscaled {
     container 'quay.io/biocontainers/scanpy-scripts:1.1.6--pypyhdfd78af_0'
+
     input:
-	tuple path(anndata), path(normalise_internal_data)
+	tuple path(anndata), path(normalise_internal_data
+
     output:
 	path "restore_unscaled_output_${anndata}.h5"
+
     script:
     """
 	ln -s $anndata input.h5
@@ -514,13 +528,17 @@ process restore_unscaled {
 }
 
 process find_markers {
-    publishDir params.result_dir_path, mode: 'copy', pattern: '(markers_\\.tsv)'
+    publishDir "${params.result_dir_path}/find_markers", mode: 'copy', pattern: 'markers_*.tsv'
     errorStrategy 'ignore'
     container 'quay.io/biocontainers/scanpy-scripts:1.1.6--pypyhdfd78af_0'
+
     input:
 	tuple path(anndata), val(merged_group_slotname)
+
     output:
 	path "markers_${merged_group_slotname}.h5ad"
+	path "markers_${merged_group_slotname}.tsv"
+
     script:
     """
 	scanpy-find-markers \
@@ -551,15 +569,18 @@ process filtered_cellgroup_markers {
 }
 
 process run_umap {
-    publishDir params.result_dir_path, mode: 'copy', pattern: '(embeddings\\.tsv)'
+    publishDir "${params.result_dir_path}/run_umap", mode: 'copy', pattern: 'embeddings_neighbors_neighbors_*.tsv'
     //errorStrategy 'ignore'
 
     container 'quay.io/biocontainers/scanpy-scripts:1.1.6--pypyhdfd78af_0'
     
     input:
         path anndata
+
     output:
         path "umap_*.h5ad"
+	path "embeddings_neighbors_neighbors_*.tsv"
+
     script:
     """
 	VAR="$anndata"
@@ -589,7 +610,7 @@ process run_umap {
 }
 
 process run_tsne {
-    publishDir params.result_dir_path, mode: 'copy', pattern: '(embeddings_perplexity\\.tsv)'
+    publishDir "${params.result_dir_path}/run_tsne", mode: 'copy', pattern: 'embeddings_perplexity_*\\.tsv'
     //errorStrategy 'ignore'
     
     container 'quay.io/biocontainers/scanpy-scripts:1.1.6--pypyhdfd78af_0'
@@ -597,8 +618,11 @@ process run_tsne {
     input:
         tuple path(anndata), val(perplexity_values)
         val pca_param
+
     output:
         path "tsne_${perplexity_values}.h5ad"
+	path "embeddings_perplexity_${perplexity_values}.tsv"
+
     script:
     """
             scanpy-run-tsne \
@@ -752,10 +776,10 @@ workflow {
         Column_rearrange_1.out[0]
     )
     normalise_data(
-        scanpy_filter_genes.out
+        scanpy_filter_genes.out[0]
     )
     normalise_internal_data(
-        scanpy_filter_genes.out
+        scanpy_filter_genes.out[0]
     )
     find_variable_genes(
         normalise_internal_data.out,
@@ -779,13 +803,13 @@ workflow {
     TNSEs_ch = run_tsne(
         harmony_batch.out.combine(perplexity_ch),
         pca_param
-    )
+    )[0]
     //TNSEs_ch
     //    .filter { it.exitStatus == 0 }
 
     UMAPs_ch = run_umap(
         neighbors_for_umap.out.flatten()
-    )
+    )[0]
     //UMAPs_ch
    //     .filter { it.exitStatus == 0 }
     find_clusters(
@@ -793,7 +817,7 @@ workflow {
     )
 
     // Combine the outputs of find_clusters and neighbors processes
-    combined_outputs = find_clusters.out.mix(neighbors.out)
+    combined_outputs = find_clusters.out[0].mix(neighbors.out)
 
     if ( params.technology == "droplet" ) {
         restore_unscaled (
@@ -821,9 +845,9 @@ workflow {
     make_project_file(
 	neighbors.out,
 	scanpy_read_10x.out,
-	scanpy_filter_genes.out,
-	normalise_data.out,
-	find_markers.out.collect(),
+	scanpy_filter_genes.out[0],
+	normalise_data.out[0],
+	find_markers.out[0].collect(),
 	TNSEs_ch.mix(UMAPs_ch).collect()
     )
 }
