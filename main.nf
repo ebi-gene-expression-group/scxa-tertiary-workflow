@@ -559,16 +559,6 @@ process find_markers {
     """
 }
 
-process filtered_cellgroup_markers {
-    input:
-
-    output:
-
-    script:
-    """
-    """
-}
-
 process run_umap {
     publishDir "${params.result_dir_path}/run_umap", mode: 'copy', pattern: 'embeddings_neighbors_neighbors_*.tsv'
 
