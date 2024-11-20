@@ -216,9 +216,9 @@ process scanpy_filter_cells {
 }
 
 process scanpy_filter_genes {
-    publishDir "${params.result_dir_path}/matrices/scanpy_filter_genes", mode: 'copy', pattern: 'matrix.mtx'
-    publishDir "${params.result_dir_path}/matrices/scanpy_filter_genes", mode: 'copy', pattern: 'barcodes.tsv'
-    publishDir "${params.result_dir_path}/matrices/scanpy_filter_genes", mode: 'copy', pattern: 'genes.tsv'
+    publishDir "${params.result_dir_path}/matrices/raw_filtered", mode: 'copy', pattern: 'matrix.mtx'
+    publishDir "${params.result_dir_path}/matrices/raw_filtered", mode: 'copy', pattern: 'barcodes.tsv'
+    publishDir "${params.result_dir_path}/matrices/raw_filtered", mode: 'copy', pattern: 'genes.tsv'
     container params.scanpy_scripts_container
 
     input:
@@ -246,9 +246,9 @@ process scanpy_filter_genes {
 }
 
 process normalise_data {
-    publishDir "${params.result_dir_path}/matrices/normalise_data", mode: 'copy', pattern: 'matrix.mtx'
-    publishDir "${params.result_dir_path}/matrices/normalise_data", mode: 'copy', pattern: 'barcodes.tsv'
-    publishDir "${params.result_dir_path}/matrices/normalise_data", mode: 'copy', pattern: 'genes.tsv'
+    publishDir "${params.result_dir_path}/matrices/filtered_normalised", mode: 'copy', pattern: 'matrix.mtx'
+    publishDir "${params.result_dir_path}/matrices/filtered_normalised", mode: 'copy', pattern: 'barcodes.tsv'
+    publishDir "${params.result_dir_path}/matrices/filtered_normalised", mode: 'copy', pattern: 'genes.tsv'
     container params.scanpy_scripts_container
 
     input:
