@@ -215,9 +215,9 @@ process scanpy_filter_cells {
 }
 
 process scanpy_filter_genes {
-    publishDir "${params.result_dir_path}/scanpy_filter_genes", mode: 'copy', pattern: 'matrix.mtx'
-    publishDir "${params.result_dir_path}/scanpy_filter_genes", mode: 'copy', pattern: 'barcodes.tsv'
-    publishDir "${params.result_dir_path}/scanpy_filter_genes", mode: 'copy', pattern: 'genes.tsv'
+    publishDir "${params.result_dir_path}/matrices/scanpy_filter_genes", mode: 'copy', pattern: 'matrix.mtx'
+    publishDir "${params.result_dir_path}/matrices/scanpy_filter_genes", mode: 'copy', pattern: 'barcodes.tsv'
+    publishDir "${params.result_dir_path}/matrices/scanpy_filter_genes", mode: 'copy', pattern: 'genes.tsv'
     container 'quay.io/biocontainers/scanpy-scripts:1.1.6--pypyhdfd78af_0'
 
     input:
@@ -245,9 +245,9 @@ process scanpy_filter_genes {
 }
 
 process normalise_data {
-    publishDir "${params.result_dir_path}/normalise_data", mode: 'copy', pattern: 'matrix.mtx'
-    publishDir "${params.result_dir_path}/normalise_data", mode: 'copy', pattern: 'barcodes.tsv'
-    publishDir "${params.result_dir_path}/normalise_data", mode: 'copy', pattern: 'genes.tsv'
+    publishDir "${params.result_dir_path}/matrices/normalise_data", mode: 'copy', pattern: 'matrix.mtx'
+    publishDir "${params.result_dir_path}/matrices/normalise_data", mode: 'copy', pattern: 'barcodes.tsv'
+    publishDir "${params.result_dir_path}/matrices/normalise_data", mode: 'copy', pattern: 'genes.tsv'
     container 'quay.io/biocontainers/scanpy-scripts:1.1.6--pypyhdfd78af_0'
 
     input:
@@ -433,7 +433,7 @@ process neighbors_for_umap {
 }
 
 process find_clusters {
-    publishDir "${params.result_dir_path}/find_clusters", mode: 'copy', pattern: 'clusters_*.tsv'
+    publishDir "${params.result_dir_path}/clusters", mode: 'copy', pattern: 'clusters_*.tsv'
     container 'quay.io/biocontainers/scanpy-scripts:1.1.6--pypyhdfd78af_0'
 
     input:
@@ -480,7 +480,7 @@ process restore_unscaled {
 }
 
 process find_markers {
-    publishDir "${params.result_dir_path}/find_markers", mode: 'copy', pattern: 'markers_*.tsv'
+    publishDir "${params.result_dir_path}/markers", mode: 'copy', pattern: 'markers_*.tsv'
     errorStrategy 'ignore'
     container 'quay.io/biocontainers/scanpy-scripts:1.1.6--pypyhdfd78af_0'
 
@@ -511,7 +511,7 @@ process find_markers {
 }
 
 process run_umap {
-    publishDir "${params.result_dir_path}/run_umap", mode: 'copy', pattern: 'embeddings_neighbors_neighbors_*.tsv'
+    publishDir "${params.result_dir_path}/umap", mode: 'copy', pattern: 'embeddings_neighbors_neighbors_*.tsv'
 
     errorStrategy 'ignore'
 
@@ -553,7 +553,7 @@ process run_umap {
 }
 
 process run_tsne {
-    publishDir "${params.result_dir_path}/run_tsne", mode: 'copy', pattern: 'embeddings_perplexity_*\\.tsv'
+    publishDir "${params.result_dir_path}/tsne", mode: 'copy', pattern: 'embeddings_perplexity_*\\.tsv'
 
     errorStrategy 'ignore'
     
@@ -601,7 +601,7 @@ process make_project_file {
         path find_markers
         path TNSEs_mix_UMAPs
     output:
-        path "output.h5"
+        path "project.h5ad"
     script:
     """
         ln -s $neighbors input.h5
@@ -624,6 +624,7 @@ process make_project_file {
                 echo "\${count}"
         done
         python ${projectDir}/scripts/final_project.py
+	mv output.h5 project.h5ad
     """
 }
 
