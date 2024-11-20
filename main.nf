@@ -2,7 +2,7 @@
 
 nextflow.enable.dsl=2
 
-params.scanpy_container = "quay.io/biocontainers/scanpy-scripts:1.1.6--pypyhdfd78af_0"
+params.scanpy_scripts_container = "quay.io/biocontainers/scanpy-scripts:1.1.6--pypyhdfd78af_0"
 params.technology = "plate"
 params.batch_variable = ""
 params.representation = "X_pca"
@@ -114,7 +114,7 @@ process mergeGeneFiles {
 }
 
 process scanpy_read_10x {
-    container params.scanpy_container
+    container params.scanpy_scripts_container
     
     input:
         path matrix
@@ -143,7 +143,7 @@ process scanpy_read_10x {
 }
 
 process scanpy_multiplet_scrublet {
-    container params.scanpy_container
+    container params.scanpy_scripts_container
     
     input:
         path anndata
@@ -173,7 +173,7 @@ process scanpy_multiplet_scrublet {
 
 process scanpy_plot_scrublet {
     publishDir params.result_dir_path, mode: 'copy', pattern: '(scrublet.png)'
-    container params.scanpy_container
+    container params.scanpy_scripts_container
     
     input:
         path anndata
@@ -193,7 +193,7 @@ process scanpy_plot_scrublet {
 }
 
 process scanpy_filter_cells {
-    container params.scanpy_container
+    container params.scanpy_scripts_container
     
     input:
         path anndata
@@ -219,7 +219,7 @@ process scanpy_filter_genes {
     publishDir "${params.result_dir_path}/matrices/scanpy_filter_genes", mode: 'copy', pattern: 'matrix.mtx'
     publishDir "${params.result_dir_path}/matrices/scanpy_filter_genes", mode: 'copy', pattern: 'barcodes.tsv'
     publishDir "${params.result_dir_path}/matrices/scanpy_filter_genes", mode: 'copy', pattern: 'genes.tsv'
-    container params.scanpy_container
+    container params.scanpy_scripts_container
 
     input:
         path anndata
@@ -249,7 +249,7 @@ process normalise_data {
     publishDir "${params.result_dir_path}/matrices/normalise_data", mode: 'copy', pattern: 'matrix.mtx'
     publishDir "${params.result_dir_path}/matrices/normalise_data", mode: 'copy', pattern: 'barcodes.tsv'
     publishDir "${params.result_dir_path}/matrices/normalise_data", mode: 'copy', pattern: 'genes.tsv'
-    container params.scanpy_container
+    container params.scanpy_scripts_container
 
     input:
         path anndata
@@ -274,7 +274,7 @@ process normalise_data {
 }
 
 process normalise_internal_data {
-    container params.scanpy_container
+    container params.scanpy_scripts_container
     
     input:
         path anndata
@@ -294,7 +294,7 @@ process normalise_internal_data {
 }
 
 process find_variable_genes {
-    container params.scanpy_container
+    container params.scanpy_scripts_container
 
     input:
         path anndata
@@ -326,7 +326,7 @@ process find_variable_genes {
 }
 
 process run_pca {
-    container params.scanpy_container
+    container params.scanpy_scripts_container
 
     input:
         path anndata
@@ -349,7 +349,7 @@ process run_pca {
 }
 
 process harmony_batch {
-    container params.scanpy_container
+    container params.scanpy_scripts_container
 
     input:
         path anndata
@@ -379,7 +379,7 @@ process harmony_batch {
 }
 
 process neighbors {
-    container params.scanpy_container
+    container params.scanpy_scripts_container
 
     input:
         path anndata
@@ -406,7 +406,7 @@ process neighbors {
 }
 
 process neighbors_for_umap {
-    container params.scanpy_container
+    container params.scanpy_scripts_container
 
 
     input:
@@ -435,7 +435,7 @@ process neighbors_for_umap {
 
 process find_clusters {
     publishDir "${params.result_dir_path}/clusters", mode: 'copy', pattern: 'clusters_*.tsv'
-    container params.scanpy_container
+    container params.scanpy_scripts_container
 
     input:
         tuple path(anndata), val(resolution)
@@ -463,7 +463,7 @@ process find_clusters {
 }
 
 process restore_unscaled {
-    container params.scanpy_container
+    container params.scanpy_scripts_container
 
     input:
 	tuple path(anndata), path(normalise_internal_data)
@@ -483,7 +483,7 @@ process restore_unscaled {
 process find_markers {
     publishDir "${params.result_dir_path}/markers", mode: 'copy', pattern: 'markers_*.tsv'
     errorStrategy 'ignore'
-    container params.scanpy_container
+    container params.scanpy_scripts_container
 
     input:
 	tuple path(anndata), val(merged_group_slotname)
@@ -516,7 +516,7 @@ process run_umap {
 
     errorStrategy 'ignore'
 
-    container params.scanpy_container
+    container params.scanpy_scripts_container
     
     input:
         path anndata
@@ -558,7 +558,7 @@ process run_tsne {
 
     errorStrategy 'ignore'
     
-    container params.scanpy_container
+    container params.scanpy_scripts_container
     
     input:
         tuple path(anndata), val(perplexity_values)
@@ -592,7 +592,7 @@ process run_tsne {
 process make_project_file {
     publishDir params.result_dir_path, mode: 'copy'
 
-    container params.scanpy_container
+    container params.scanpy_scripts_container
 
     input:
         path neighbors
