@@ -4,7 +4,7 @@ nextflow.enable.dsl=2
 
 params.technology = "plate"
 params.batch_variable = ""
-params.pca_param = "X_pca"
+params.representation = "X_pca"
 params.dir_path = "."
 params.result_dir_path = params.output_path ?: params.dir_path + "/results"
 params.celltype_field = 'NO_CELLTYPE_FIELD'
@@ -382,7 +382,7 @@ process neighbors {
 
     input:
         path anndata
-        val pca_param
+        val representation
     output:
         path 'neighbors.h5ad'
 
@@ -393,7 +393,7 @@ process neighbors {
         --method 'umap' \
         --metric 'euclidean' \
         --random-state '0' \
-        --use-rep $pca_param \
+        --use-rep $representation \
         --n-pcs '50' \
         --input-format 'anndata' \
         $anndata \
@@ -410,7 +410,7 @@ process neighbors_for_umap {
 
     input:
         tuple path(anndata), val(n_neighbors)
-        val pca_param
+        val representation
     output:
         path "neighbors_${n_neighbors}.h5ad"
     script:
@@ -421,7 +421,7 @@ process neighbors_for_umap {
             --method 'umap' \
             --metric 'euclidean' \
             --random-state '0' \
-            --use-rep $pca_param \
+            --use-rep $representation \
             --n-pcs '50' \
             --input-format 'anndata' \
             $anndata \
@@ -561,7 +561,7 @@ process run_tsne {
     
     input:
         tuple path(anndata), val(perplexity_values)
-        val pca_param
+        val representation
 
     output:
         path "tsne_${perplexity_values}.h5ad"
@@ -570,7 +570,7 @@ process run_tsne {
     script:
     """
             scanpy-run-tsne \
-            --use-rep $pca_param \
+            --use-rep $representation \
             --export-embedding embeddings.tsv \
             --perplexity $perplexity_values \
             --key-added 'perplexity_$perplexity_values' \
@@ -704,15 +704,15 @@ workflow {
     )
     neighbors(
         harmony_batch.out,
-        params.pca_param
+        params.representation
     )
     neighbors_for_umap(
         harmony_batch.out.combine(neighbors_ch),
-        params.pca_param
+        params.representation
     )
     TNSEs_ch = run_tsne(
         harmony_batch.out.combine(perplexity_ch),
-        params.pca_param
+        params.representation
     )[0]
     //TNSEs_ch
     //    .filter { it.exitStatus == 0 }
