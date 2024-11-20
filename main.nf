@@ -4,6 +4,7 @@ nextflow.enable.dsl=2
 
 params.technology = "plate"
 params.batch_variable = ""
+params.pca_param = "X_pca"
 params.dir_path = "."
 params.result_dir_path = params.output_path ?: params.dir_path + "/results"
 params.celltype_field = 'NO_CELLTYPE_FIELD'
@@ -634,8 +635,6 @@ workflow {
     barcodes = Channel.fromPath("${params.dir_path}/barcodes.tsv")
     matrix = Channel.fromPath("${params.dir_path}/matrix.mtx")
     cellmeta = Channel.fromPath("${params.dir_path}/cell_metadata.tsv")
-    pca_param = Channel.value('X_pca')
-    batch_variable = Channel.value('')
     neighbors_ch = channel.fromList(params.neighbor_values)
     perplexity_ch = channel.fromList(params.perplexity_values)
     resolution_ch = channel.fromList(params.resolution_values)
@@ -665,7 +664,7 @@ workflow {
     if ( params.technology == "droplet" ) {
         SCRUBLET_ch = scanpy_multiplet_scrublet(
             scanpy_read_10x.out,
-            batch_variable
+            params.batch_variable
         )
         scanpy_plot_scrublet(
             SCRUBLET_ch
@@ -694,26 +693,26 @@ workflow {
     )
     find_variable_genes(
         normalise_internal_data.out,
-        batch_variable
+        params.batch_variable
     )
     run_pca(
         find_variable_genes.out
     )
     harmony_batch(
         run_pca.out,
-        batch_variable
+        params.batch_variable
     )
     neighbors(
         harmony_batch.out,
-        pca_param
+        params.pca_param
     )
     neighbors_for_umap(
         harmony_batch.out.combine(neighbors_ch),
-        pca_param
+        params.pca_param
     )
     TNSEs_ch = run_tsne(
         harmony_batch.out.combine(perplexity_ch),
-        pca_param
+        params.pca_param
     )[0]
     //TNSEs_ch
     //    .filter { it.exitStatus == 0 }
