@@ -154,7 +154,7 @@ process scanpy_multiplet_scrublet {
 
     script:
     """
-        if [ -z "${params.batch_variable}" ]; then
+        if [ -z "$batch_variable" ]; then
             scanpy-cli multiplet scrublet \
             --input-format 'anndata' \
             --output-format 'anndata' \
