@@ -434,7 +434,7 @@ process neighbors_for_umap {
 }
 
 process find_clusters {
-    publishDir "${params.result_dir_path}/clusters", mode: 'copy', pattern: 'clusters_*.tsv'
+    publishDir "${params.result_dir_path}/clusters", mode: 'copy', pattern: 'clusters_resolution_*.tsv'
     container params.scanpy_scripts_container
 
     input:
@@ -458,7 +458,7 @@ process find_clusters {
         --output-format anndata \
         'clusters_${resolution}.h5ad'
 	
-	mv 'output.tsv' 'clusters_${resolution}.tsv'
+	mv 'output.tsv' 'clusters_resolution_${resolution}.tsv'
     """
 }
 
@@ -507,7 +507,7 @@ process find_markers {
 	$anndata  \
 	--show-obj stdout \
 	--output-format anndata \
-	'markers_${merged_group_slotname}.h5ad'
+	'markers_${merged_group_slotname}.h5ad' \
     """
 }
 
