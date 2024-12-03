@@ -523,7 +523,7 @@ process run_umap {
 
     output:
         path "umap_*.h5ad"
-	path "embeddings_neighbors_neighbors_*.tsv"
+	path "umap_n_neighbors_*.tsv"
 
     script:
     """
@@ -547,7 +547,7 @@ process run_umap {
             --show-obj stdout \
             --output-format anndata \
             "umap_\${n_number}.h5ad" \
-            && mv "embeddings_neighbors_neighbors_\${n_number}.tsv" umap_n_neighbors_\${n_number}.tsv
+            && mv 'embeddings_neighbors_neighbors_\${n_number}.tsv' 'umap_n_neighbors_\${n_number}.tsv'
 
     """
 }
@@ -565,7 +565,7 @@ process run_tsne {
 
     output:
         path "tsne_${perplexity_values}.h5ad"
-	path "embeddings_perplexity_${perplexity_values}.tsv"
+	path "tsne_perplexity_${perplexity_values}.tsv"
 
     script:
     """
