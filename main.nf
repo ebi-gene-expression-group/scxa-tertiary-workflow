@@ -512,7 +512,7 @@ process find_markers {
 }
 
 process run_umap {
-    publishDir "${params.result_dir_path}/umap", mode: 'copy', pattern: 'embeddings_neighbors_neighbors_*.tsv'
+    publishDir "${params.result_dir_path}/umap", mode: 'copy', pattern: 'umap_n_neighbors_*.tsv'
 
     errorStrategy 'ignore'
 
@@ -546,15 +546,14 @@ process run_umap {
             $anndata \
             --show-obj stdout \
             --output-format anndata \
-            "umap_\${n_number}.h5ad"  
-            # Not sure if following is needed
-            # && mv "embeddings_neighbors_n_neighbors_\${n_number}.tsv" embeddings.tsv
+            "umap_\${n_number}.h5ad" \
+            && mv "embeddings_neighbors_neighbors_\${n_number}.tsv" umap_n_neighbors_\${n_number}.tsv
 
     """
 }
 
 process run_tsne {
-    publishDir "${params.result_dir_path}/tsne", mode: 'copy', pattern: 'embeddings_perplexity_*\\.tsv'
+    publishDir "${params.result_dir_path}/tsne", mode: 'copy', pattern: 'tsne_perplexity_*\\.tsv'
 
     errorStrategy 'ignore'
     
@@ -583,9 +582,8 @@ process run_tsne {
             $anndata \
             --show-obj stdout \
             --output-format anndata \
-            'tsne_${perplexity_values}.h5ad'
-            # Not sure if following is needed
-            # && mv 'embeddings_perplexity_${perplexity_values}.tsv' embeddings.tsv
+            'tsne_${perplexity_values}.h5ad' \
+            && mv 'embeddings_perplexity_${perplexity_values}.tsv' 'tsne_perplexity_${perplexity_values}.tsv'
     """
 }
 
