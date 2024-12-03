@@ -441,7 +441,7 @@ process find_clusters {
         tuple path(anndata), val(resolution)
     output:
         path "clusters_${resolution}.h5ad"
-	path "clusters_${resolution}.tsv"
+	path "clusters_resolution_${resolution}.tsv"
 
     script:
     """
