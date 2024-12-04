@@ -490,10 +490,15 @@ process find_markers {
 
     output:
 	path "markers_${merged_group_slotname}.h5ad"
-	path "markers_${merged_group_slotname}.tsv"
+	path "markers_*.tsv"
 
     script:
     """
+	VAR="$merged_group_slotname"
+	PREFIX={params.slotname}
+	n_number="\${VAR/_\$PREFIX/}"
+	echo \$n_number
+
 	scanpy-find-markers \
 	--save 'markers_${merged_group_slotname}.tsv' \
 	--n-genes '100' \
@@ -508,6 +513,7 @@ process find_markers {
 	--show-obj stdout \
 	--output-format anndata \
 	'markers_${merged_group_slotname}.h5ad' \
+	&& 'markers_${merged_group_slotname}.tsv' 'markers_\${n_number}.tsv'
     """
 }
 
