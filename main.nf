@@ -496,6 +496,8 @@ process find_markers {
     """
 	VAR="$merged_group_slotname"
 	PREFIX={params.slotname}
+	echo \$VAR
+	echo \$PREFIX
 	n_number="\${VAR/_\$PREFIX/}"
 	echo \$n_number
 
@@ -513,7 +515,7 @@ process find_markers {
 	--show-obj stdout \
 	--output-format anndata \
 	'markers_${merged_group_slotname}.h5ad' \
-	&& 'markers_${merged_group_slotname}.tsv' 'markers_\${n_number}.tsv'
+	&& mv 'markers_${merged_group_slotname}.tsv' 'markers_\${n_number}.tsv'
     """
 }
 
