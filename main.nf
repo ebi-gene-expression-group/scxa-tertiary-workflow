@@ -495,11 +495,11 @@ process find_markers {
     script:
     """
 	VAR="$merged_group_slotname"
-	PREFIX={params.slotname}
-	echo \$VAR
-	echo \$PREFIX
-	n_number="\${VAR/_\$PREFIX/}"
-	echo \$n_number
+        PREFIX="${params.slotname}_"
+        echo \$VAR
+        echo \$PREFIX
+        n_number="\${VAR#\$PREFIX}"
+        echo \$n_number
 
 	scanpy-find-markers \
 	--save 'markers_${merged_group_slotname}.tsv' \
@@ -514,8 +514,8 @@ process find_markers {
 	$anndata  \
 	--show-obj stdout \
 	--output-format anndata \
-	'markers_${merged_group_slotname}.h5ad' \
-	&& mv 'markers_${merged_group_slotname}.tsv' 'markers_\${n_number}.tsv'
+	"markers_${merged_group_slotname}.h5ad" \
+        && mv "markers_${merged_group_slotname}.tsv" "markers_\${n_number}.tsv"
     """
 }
 
