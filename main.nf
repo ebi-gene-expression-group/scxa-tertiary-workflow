@@ -540,7 +540,7 @@ process run_umap {
 	echo \$n_number
 	scanpy-run-umap \
             --neighbors-key "neighbors_n_\${n_number}" \
-            --key-added "neighbors_\${n_number}" \
+            --key-added "neighbors_n_\${n_number}" \
             --export-embedding embeddings.tsv \
             --n-components 2 \
             --min-dist 0.5 \
