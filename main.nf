@@ -555,7 +555,7 @@ process run_umap {
             --show-obj stdout \
             --output-format anndata \
             "umap_\${n_number}.h5ad" \
-            && mv "embeddings_neighbors_\${n_number}.tsv" umap_n_\${n_number}.tsv
+            && mv "embeddings_neighbors_n_\${n_number}.tsv" umap_n_\${n_number}.tsv
 
     """
 }
