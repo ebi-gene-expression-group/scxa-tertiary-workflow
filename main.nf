@@ -30,6 +30,8 @@ resolution_values: ${params.resolution_values}
 slotname: ${params.slotname}
 clustering_slotname: ${params.clustering_slotname}
 merged_group_slotname: ${params.merged_group_slotname}
+batch_variable: ${params.batch_variable}
+representation: ${params.representation}
 ===============================
 """
 
