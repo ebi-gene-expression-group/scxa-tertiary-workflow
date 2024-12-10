@@ -206,8 +206,13 @@ process scanpy_filter_cells {
 
     script:
     """
-        scanpy-filter-cells --gene-name 'gene_symbols' \
-        --param 'c:n_counts' 750.0 1000000000.0 \
+        n_counts=1500
+	if [[ -n "$category" ]]; then
+            n_counts=750
+        fi
+
+	scanpy-filter-cells --gene-name 'gene_symbols' \
+        --param 'c:n_counts' \$n_counts 1000000000.0 \
         --param 'c:pct_counts_mito' 0.0 0.35 \
         --input-format 'anndata' $anndata \
         --show-obj stdout \
