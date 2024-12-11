@@ -332,6 +332,26 @@ process find_variable_genes {
     """
 }
 
+process scale_data {
+    container 'quay.io/biocontainers/scanpy-scripts:1.1.6--pypyhdfd78af_0'
+
+    input:
+        path anndata
+
+    output:
+        path 'scaled_anndata.h5ad'
+
+    script:
+    """
+        scanpy-scale-data \
+        --input-format "anndata" \
+        --output-format "anndata" \
+        $anndata \
+        'scaled_anndata.h5ad'
+
+    """
+}
+
 process run_pca {
     container params.scanpy_scripts_container
 
@@ -710,9 +730,21 @@ workflow {
         normalise_internal_data.out,
         params.batch_variable
     )
-    run_pca(
-        find_variable_genes.out
-    )
+
+    if ( params.technology == "droplet" ) {
+        scale_data(
+            find_variable_genes.out
+        )
+        run_pca(
+            scale_data.out
+        )
+    }
+    else {
+        run_pca(
+            find_variable_genes.out
+        )
+    }
+
     harmony_batch(
         run_pca.out,
         params.batch_variable
