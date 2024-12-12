@@ -558,11 +558,11 @@ process run_umap {
 
     output:
         path "umap_*.h5ad"
-	path "umap_n_neighbors_*.tsv"
+        path "umap_n_neighbors_*.tsv"
 
     script:
     """
-        PYTHONIOENCODING=utf-8
+	echo \$PYTHONIOENCODING
 	VAR="$anndata"
 	n_number="\${VAR%.h5ad}"
 	echo \$n_number
@@ -659,7 +659,7 @@ process make_project_file {
                 echo "\${count}"
         done
         python ${projectDir}/scripts/final_project.py
-	mv output.h5 project.h5ad
+        mv output.h5 project.h5ad
     """
 }
 
