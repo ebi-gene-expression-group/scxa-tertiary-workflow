@@ -562,6 +562,7 @@ process run_umap {
 
     script:
     """
+        PYTHONIOENCODING=utf-8
 	VAR="$anndata"
 	n_number="\${VAR%.h5ad}"
 	echo \$n_number
