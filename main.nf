@@ -14,7 +14,7 @@ params.perplexity_values = ['1', '5', '10', '15', '20', '25', '30', '35', '40', 
 params.resolution_values = ['0.1', '0.3', '0.5', '0.7', '1.0', '2.0', '3.0', '4.0', '5.0']
 params.slotname = "louvain_resolution"
 params.clustering_slotname = params.resolution_values.collect { params.slotname + "_" + it }
-params.merged_group_slotname = params.clustering_slotname + params.celltype_field
+params.merged_group_slotname = params.clustering_slotname.collect { it + params.celltype_field }
 
 log.info """
 ===============================
@@ -133,6 +133,8 @@ process scanpy_read_10x {
         #ln -s $matrix matrix.mtx
         ln -s $genes genes.tsv
         #ln -s $barcodes barcodes.tsv
+
+        export PYTHONIOENCODING='utf-8'
         
         scanpy-read-10x --input-10x-mtx ./ \
         --var-names 'gene_ids' \
@@ -156,6 +158,7 @@ process scanpy_multiplet_scrublet {
 
     script:
     """
+        export PYTHONIOENCODING='utf-8'
         if [ -z "$batch_variable" ]; then
             scanpy-cli multiplet scrublet \
             --input-format 'anndata' \
@@ -185,6 +188,7 @@ process scanpy_plot_scrublet {
 
     script:
     """
+        export PYTHONIOENCODING='utf-8'
         scanpy-cli plot scrublet \
         --input-format "anndata" \
         --scale-hist-obs "linear" \
@@ -206,11 +210,12 @@ process scanpy_filter_cells {
 
     script:
     """
-        n_counts=1500
-	if [[ -n "$category" ]]; then
-            n_counts=750
-        fi
+    n_counts=1500
+    if [[ -n "$category" ]]; then
+        n_counts=750
+    fi
 
+    export PYTHONIOENCODING='utf-8'
 	scanpy-filter-cells --gene-name 'gene_symbols' \
         --param 'c:n_counts' \$n_counts 1000000000.0 \
         --param 'c:pct_counts_mito' 0.0 0.35 \
@@ -240,6 +245,7 @@ process scanpy_filter_genes {
 
     script:
     """
+        export PYTHONIOENCODING='utf-8'
         scanpy-filter-genes \
         --param 'g:n_cells' 3.0 1000000000.0 \
         --subset 'g:index' \
@@ -269,6 +275,7 @@ process normalise_data {
 
     script:
     """
+        export PYTHONIOENCODING='utf-8'
         scanpy-normalise-data \
         --no-log-transform \
         --normalize-to '1000000.0' \
@@ -291,6 +298,7 @@ process normalise_internal_data {
 
     script:
     """
+        export PYTHONIOENCODING='utf-8'
         scanpy-normalise-data \
         --normalize-to '1000000.0' \
         --input-format 'anndata' $anndata \
@@ -317,7 +325,7 @@ process find_variable_genes {
             batch_variable_tag="--batch-key $batch_variable"
         fi
 
-
+        export PYTHONIOENCODING='utf-8'
         scanpy-find-variable-genes \
         --flavor 'seurat' \
         --mean-limits 0.0125 1000000000.0 \
@@ -343,6 +351,7 @@ process scale_data {
 
     script:
     """
+        export PYTHONIOENCODING='utf-8'
         scanpy-scale-data \
         --input-format "anndata" \
         --output-format "anndata" \
@@ -363,6 +372,7 @@ process run_pca {
 
     script:
     """
+        export PYTHONIOENCODING='utf-8'
         scanpy-run-pca \
         --no-zero-center \
         --svd-solver 'arpack' \
@@ -386,6 +396,7 @@ process harmony_batch {
 
     script:
     """
+        export PYTHONIOENCODING='utf-8'
         if [[ -n "$batch_variable" ]]; then
             scanpy-integrate harmony \
             --batch-key $batch_variable \
@@ -416,6 +427,7 @@ process neighbors {
 
     script:
     """
+        export PYTHONIOENCODING='utf-8'
         scanpy-neighbors \
         --n-neighbors 15 \
         --method 'umap' \
@@ -443,6 +455,7 @@ process neighbors_for_umap {
         path "neighbors_${n_neighbors}.h5ad"
     script:
     """
+        export PYTHONIOENCODING='utf-8'
         scanpy-neighbors \
             --n-neighbors $n_neighbors \
             --key-added 'neighbors_n_neighbors_${n_neighbors}' \
@@ -472,6 +485,7 @@ process find_clusters {
 
     script:
     """
+        export PYTHONIOENCODING='utf-8'
         scanpy-find-cluster louvain \
         --neighbors-key 'neighbors' \
         --key-added 'louvain_resolution_${resolution}' \
@@ -500,6 +514,7 @@ process restore_unscaled {
 
     script:
     """
+	export PYTHONIOENCODING='utf-8'
 	ln -s $anndata input.h5
 	ln -s $normalise_internal_data r_source.h5
 	python ${projectDir}/scripts/restore_unscaled.py
@@ -527,6 +542,8 @@ process find_markers {
         echo \$PREFIX
         n_number="\${VAR#\$PREFIX}"
         echo \$n_number
+
+    export PYTHONIOENCODING='utf-8'
 
 	scanpy-find-markers \
 	--save 'markers_${merged_group_slotname}.tsv' \
@@ -606,6 +623,7 @@ process run_tsne {
 
     script:
     """
+            export PYTHONIOENCODING='utf-8'
             scanpy-run-tsne \
             --use-rep $representation \
             --export-embedding embeddings.tsv \
@@ -640,6 +658,7 @@ process make_project_file {
         path "project.h5ad"
     script:
     """
+        export PYTHONIOENCODING='utf-8'
         ln -s $neighbors input.h5
         ln -s $scanpy_read_10x r_source.h5
         ln -s '$filter_genes' x_source_0.h5
