@@ -2,7 +2,7 @@
 
 nextflow.enable.dsl=2
 
-params.scanpy_scripts_container = "quay.io/biocontainers/scanpy-scripts:1.1.6--pypyhdfd78af_0"
+params.scanpy_scripts_container = "quay.io/biocontainers/scanpy-scripts:1.9.301--pyhdfd78af_0"
 params.technology = "plate"
 params.batch_variable = ""
 params.representation = "X_pca"
@@ -341,7 +341,7 @@ process find_variable_genes {
 }
 
 process scale_data {
-    container 'quay.io/biocontainers/scanpy-scripts:1.1.6--pypyhdfd78af_0'
+    container params.scanpy_scripts_container
 
     input:
         path anndata
