@@ -2,7 +2,7 @@
 
 nextflow.enable.dsl=2
 
-params.scanpy_scripts_container = "quay.io/biocontainers/scanpy-scripts:1.1.2--pypyhdfd78af_1"
+params.scanpy_scripts_container = "quay.io/biocontainers/scanpy-scripts:1.9.301--pyhdfd78af_0"
 params.technology = "plate"
 params.batch_variable = ""
 params.representation = "X_pca"
