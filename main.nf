@@ -540,8 +540,12 @@ process find_markers {
         PREFIX="${params.slotname}_"
         echo \$VAR
         echo \$PREFIX
-        n_number="\${VAR#\$PREFIX}"
-        echo \$n_number
+        if [[ "\$VAR" == *"\$PREFIX"* ]]; then
+            suffix="resolution_\${VAR#\$PREFIX}"
+        else
+            suffix=\$VAR
+        fi
+        echo \$suffix
 
     export PYTHONIOENCODING='utf-8'
 
@@ -559,7 +563,7 @@ process find_markers {
 	--show-obj stdout \
 	--output-format anndata \
 	"markers_${merged_group_slotname}.h5ad" \
-        && mv "markers_${merged_group_slotname}.tsv" "markers_resolution_\${n_number}.tsv"
+        && mv "markers_${merged_group_slotname}.tsv" "markers_\${suffix}.tsv"
     """
 }
 
