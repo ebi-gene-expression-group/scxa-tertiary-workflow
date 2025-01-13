@@ -563,7 +563,7 @@ process find_markers {
 	--show-obj stdout \
 	--output-format anndata \
 	"markers_${merged_group_slotname}.h5ad" \
-        && mv "markers_${merged_group_slotname}.tsv" "markers_\${suffix}.tsv"
+        && [ "${merged_group_slotname}" != "\${suffix}" ] && mv "markers_${merged_group_slotname}.tsv" "markers_\${suffix}.tsv"
     """
 }
 
