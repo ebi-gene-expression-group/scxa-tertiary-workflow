@@ -2,10 +2,10 @@ name: nf-core linting
 on:
   push:
     branches:
-      - main
+      - non-existent-branch
   pull_request:
     branches:
-      - main
+      - non-existent-branch
 
 jobs:
   lint:
