@@ -524,7 +524,7 @@ process restore_unscaled {
 
 process find_markers {
     publishDir "${params.result_dir_path}/markers", mode: 'copy', pattern: 'markers_*.tsv'
-errorStrategy { task.exitStatus in 137..140 ? 'retry' : 'ignore' }
+    errorStrategy { task.exitStatus in 137..140 ? 'retry' : 'ignore' }
     container params.scanpy_scripts_container
 
     input:
@@ -570,7 +570,7 @@ errorStrategy { task.exitStatus in 137..140 ? 'retry' : 'ignore' }
 process run_umap {
     publishDir "${params.result_dir_path}/umap", mode: 'copy', pattern: 'umap_n_neighbors_*.tsv'
 
-   errorStrategy { task.exitStatus in 137..140 ? 'retry' : 'ignore' }
+    errorStrategy { task.exitStatus in 137..140 ? 'retry' : 'ignore' }
 
     container params.scanpy_scripts_container
     
@@ -613,7 +613,7 @@ process run_umap {
 process run_tsne {
     publishDir "${params.result_dir_path}/tsne", mode: 'copy', pattern: 'tsne_perplexity_*\\.tsv'
 
-   errorStrategy { task.exitStatus in 137..140 ? 'retry' : 'ignore' }
+    errorStrategy { task.exitStatus in 137..140 ? 'retry' : 'ignore' }
     
     container params.scanpy_scripts_container
     
