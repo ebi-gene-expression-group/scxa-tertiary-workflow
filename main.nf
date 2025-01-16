@@ -524,14 +524,6 @@ process restore_unscaled {
 
 process find_markers {
     publishDir "${params.result_dir_path}/markers", mode: 'copy', pattern: 'markers_*.tsv'
-
-    errorStrategy { 
-        if (task.exitStatus in 137..140) {
-            return 'retry'
-        } else {
-            return 'ignore'
-        }
-    }
 errorStrategy { task.exitStatus in 137..140 ? 'retry' : 'ignore' }
     container params.scanpy_scripts_container
 
