@@ -547,7 +547,7 @@ process find_markers {
         fi
         echo \$suffix
 
-    export PYTHONIOENCODING='utf-8'
+    	export PYTHONIOENCODING='utf-8'
 
 	scanpy-find-markers \
 	--save 'markers_${merged_group_slotname}.tsv' \
@@ -562,8 +562,22 @@ process find_markers {
 	$anndata  \
 	--show-obj stdout \
 	--output-format anndata \
-	"markers_${merged_group_slotname}.h5ad" \
-        && [ "${merged_group_slotname}" != "\${suffix}" ] && mv "markers_${merged_group_slotname}.tsv" "markers_\${suffix}.tsv" || { echo "${merged_group_slotname} and \${suffix} are the same, renaming file not required."; }
+	"markers_${merged_group_slotname}.h5ad" 
+
+	command_exitcode=\$?
+	echo "Command exit code: \$command_exitcode"
+	
+	if [ "\$command_exitcode" -eq 0 ]; then
+	    if [ "${merged_group_slotname}" != "\${suffix}" ]; then
+	        mv "markers_${merged_group_slotname}.tsv" "markers_\${suffix}.tsv"
+	        echo "Renamed markers file to markers_\${suffix}.tsv"
+	    else
+	        echo "${merged_group_slotname} and \${suffix} are the same, renaming file not required."
+	    fi
+	else
+	    echo "scanpy-find-markers failed with exit code \$command_exitcode" >&2
+	    exit \$command_exitcode
+	fi
     """
 }
 
