@@ -524,7 +524,7 @@ process restore_unscaled {
 
 process find_markers {
     publishDir "${params.result_dir_path}/markers", mode: 'copy', pattern: 'markers_*.tsv'
-    errorStrategy 'ignore'
+    errorStrategy { task.exitStatus in 137..140 ? 'retry' : 'ignore' }
     container params.scanpy_scripts_container
 
     input:
@@ -547,7 +547,7 @@ process find_markers {
         fi
         echo \$suffix
 
-    export PYTHONIOENCODING='utf-8'
+    	export PYTHONIOENCODING='utf-8'
 
 	scanpy-find-markers \
 	--save 'markers_${merged_group_slotname}.tsv' \
@@ -562,15 +562,29 @@ process find_markers {
 	$anndata  \
 	--show-obj stdout \
 	--output-format anndata \
-	"markers_${merged_group_slotname}.h5ad" \
-        && [ "${merged_group_slotname}" != "\${suffix}" ] && mv "markers_${merged_group_slotname}.tsv" "markers_\${suffix}.tsv" || { echo "${merged_group_slotname} and \${suffix} are the same, renaming file not required."; }
+	"markers_${merged_group_slotname}.h5ad" 
+
+	command_exitcode=\$?
+	echo "Command exit code: \$command_exitcode"
+	
+	if [ "\$command_exitcode" -eq 0 ]; then
+	    if [ "${merged_group_slotname}" != "\${suffix}" ]; then
+	        mv "markers_${merged_group_slotname}.tsv" "markers_\${suffix}.tsv"
+	        echo "Renamed markers file to markers_\${suffix}.tsv"
+	    else
+	        echo "${merged_group_slotname} and \${suffix} are the same, renaming file not required."
+	    fi
+	else
+	    echo "scanpy-find-markers failed with exit code \$command_exitcode" >&2
+	    exit \$command_exitcode
+	fi
     """
 }
 
 process run_umap {
     publishDir "${params.result_dir_path}/umap", mode: 'copy', pattern: 'umap_n_neighbors_*.tsv'
 
-    errorStrategy 'ignore'
+    errorStrategy { task.exitStatus in 137..140 ? 'retry' : 'ignore' }
 
     container params.scanpy_scripts_container
     
@@ -613,7 +627,7 @@ process run_umap {
 process run_tsne {
     publishDir "${params.result_dir_path}/tsne", mode: 'copy', pattern: 'tsne_perplexity_*\\.tsv'
 
-    errorStrategy 'ignore'
+    errorStrategy { task.exitStatus in 137..140 ? 'retry' : 'ignore' }
     
     container params.scanpy_scripts_container
     
