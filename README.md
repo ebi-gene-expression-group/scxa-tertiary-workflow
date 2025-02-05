@@ -4,14 +4,15 @@ Tertiary component for SCXA workflows
 # How to run workflow for tertiary analysis 
 ## Prepare data
 
-Datasets for the tertiary analysis must be in a single directory to be used in `--dir_path`
+To perform a tertiary analysis, all required datasets must be stored in a single directory, which should be specified using the --dir_path parameter.
 
-Following files are required:
-1. genes_metadata.tsv
-2. genes.tsv
-3. barcodes.tsv
-4. matrix.mtx
-5. cell_metadata.tsv
+Ensure the following files are present in the directory:
+
+`genes_metadata.tsv` – Metadata information for genes
+`genes.tsv` – List of gene identifiers
+`barcodes.tsv` – Cell barcode identifiers
+`matrix.mtx` – Expression matrix in Matrix Market format
+`cell_metadata.tsv` – Metadata information for individual cells
 
 ## Run for plate
 ```
