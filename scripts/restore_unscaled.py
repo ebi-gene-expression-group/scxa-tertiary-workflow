@@ -1,7 +1,7 @@
 import scanpy as sc
-import anndata
 from numpy import all
 import logging
+import sys
 
 adata = sc.read('input.h5')
 
@@ -11,10 +11,10 @@ gene_names = getattr(adata.var, gene_name)
 
 ad_s = sc.read('r_source.h5')
 if not all(adata.obs.index.isin(ad_s.obs.index)):
-  logging.error("Specified object for .raw must contain all .obs from main object.")
-  sys.exit(1)
+    logging.error("Specified object for .raw must contain all .obs from main object.")
+    sys.exit(1)
 else:
-  adata.raw = ad_s[adata.obs.index]
+    adata.raw = ad_s[adata.obs.index]
 del ad_s
 
 if len(qc_vars) > 0:
