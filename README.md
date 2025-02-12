@@ -29,7 +29,9 @@ Ensure the following files are present in the directory:
 
 ### Requirements
 
-- Nextflow.
+- Nextflow
+- Singularity
+  
 ### High-performance computing
 
 This workflow can be run on High-performance computing.
