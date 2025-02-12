@@ -30,7 +30,11 @@ Ensure the following files are present in the directory:
 ### Requirements
 
 - Nextflow.
-- SLURM.  For cluster job scheduling if using the --slurm option.
+### High-performance computing
+
+This workflow can be run on High-performance computing.
+
+- SLURM.  For SLURM job scheduling - use the `--slurm` option.
   
 ### Running the Workflow
 
