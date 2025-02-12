@@ -38,11 +38,11 @@ This workflow can be run on High-performance computing.
 
 - SLURM.  For SLURM job scheduling - use the `--slurm` option.
   
-### Running the Workflow
+### Running the workflow
 
 The workflow can be executed for two types of scRNA-seq technologies: plate-based and droplet-based.
 
-#### For plate-based Data:
+#### For plate-based data:
 
 ```sh
 nextflow run main.nf --slurm -resume --dir_path <EXP-ID with path> [--output_path <PATH>]  [--scanpy_scripts_container <container_id>] [--celltype_field <celltype_field>]
