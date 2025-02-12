@@ -9,9 +9,9 @@ Tertiary component for Single-Cell Expression Atlas workflows, focused on post-p
 
 ## Overview
 
-This Nextflow workflow is designed to perform downstream (tertiary) analysis on single-cell RNA sequencing (scRNA-seq) data. It takes processed data (expression matrix and metadata) as input, normalizes and scales the data, identifies variable genes, runs principal component analysis (PCA), integrates batch effects using Harmony, calculates cell neighborhoods, finds clusters, and performs visualizations like UMAP and t-SNE.
+This Nextflow workflow is designed to perform analysis downstream of single-cell RNA sequencing (scRNA-seq) raw data quantification. It takes processed data (expression matrix and metadata) as input, normalizes and scales the data, identifies variable genes, runs principal component analysis (PCA), integrates batch effects using Harmony, calculates cell neighborhoods, finds clusters, and performs visualizations like UMAP and t-SNE.  It also finds markers for cell groupings.
 
-The workflow runs downstream analyses using Scanpy, leveraging the [scanpy-scripts](https://github.com/ebi-gene-expression-group/scanpy-scripts) package to run individual steps of the Scanpy workflow.
+The workflow runs these analyses using Scanpy, leveraging the [scanpy-scripts](https://github.com/ebi-gene-expression-group/scanpy-scripts) package to run individual steps of the Scanpy workflow.
 
 ## How to run the workflow
 
