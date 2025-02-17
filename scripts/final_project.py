@@ -1,6 +1,7 @@
 import scanpy as sc
 from numpy import all
 import logging
+import anndata
 import os
 import sys
 
