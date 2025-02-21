@@ -7,6 +7,8 @@
 ## Introduction
 Tertiary component for Single-Cell Expression Atlas workflows, focused on post-processing and advanced analyses like normalization, PCA, clustering, t-SNE, and UMAP visualizations.
 
+![#](docs/images/scxa-tertiary.svg)
+
 ## Overview
 
 This Nextflow workflow is designed to perform analysis downstream of the quantification of expression counts from single-cell RNA sequencing (scRNA-seq) raw data. This tertiary analysis takes processed data (expression matrix and metadata) as input, normalizes and scales the data, identifies variable genes, runs principal component analysis (PCA), integrates batch effects using Harmony, calculates cell neighborhoods, finds clusters, and performs visualizations like UMAP and t-SNE.  It also finds markers for cell groupings.
