@@ -1,4 +1,4 @@
-## Test dataset 
+## Test datasets for Single-Cell Expression Atlas workflow
 
 The workflow can be executed for two types of scRNA-seq technologies: plate-based and droplet-based.
 
