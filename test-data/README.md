@@ -11,6 +11,6 @@ nextflow run main.nf --slurm -resume --dir_path test-1 test-1-out --celltype_fie
 For droplet-based data (test-2):
 
 ```
-nextflow run main.nf --slurm -resume --dir_path test-1 test-1-out --technology droplet --celltype_field authors_cell_type_-_ontology_labels
+nextflow run main.nf --slurm -resume --dir_path test-2 test-2-out --technology droplet --celltype_field authors_cell_type_-_ontology_labels
 ```
 
