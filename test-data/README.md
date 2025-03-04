@@ -2,7 +2,7 @@
 
 The workflow can be executed for two types of scRNA-seq technologies: plate-based and droplet-based.
 
-1. For plate-based data (test-plate). More details on SC Expression Atlas [E-GEOD-9801](https://www.ebi.ac.uk/gxa/sc/experiments/E-GEOD-9801):
+1. For plate-based data (test-plate). More details on SC Expression Atlas [E-MTAB-9801](https://www.ebi.ac.uk/gxa/sc/experiments/E-MTAB-9801):
 
 ```
 nextflow run main.nf \
@@ -23,4 +23,5 @@ nextflow run main.nf \
 --technology droplet \
 --celltype_field authors_cell_type_-_ontology_labels
 ```
-here, `--celltype_field` is optional 
+
+here, for both the examples `--celltype_field` is optional 
