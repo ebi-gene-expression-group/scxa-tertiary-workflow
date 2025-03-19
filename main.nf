@@ -663,6 +663,8 @@ process run_tsne {
 process make_project_file {
     publishDir params.result_dir_path, mode: 'copy'
 
+    errorStrategy { task.exitStatus in 137..140 ? 'retry' : 'ignore' }
+
     container params.scanpy_scripts_container
 
     input:
