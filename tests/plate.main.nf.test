@@ -2,7 +2,7 @@ nextflow_pipeline {
 
     name "Test Workflow main.nf - plate"
     script "main.nf"
-    config "./nextflow.config"
+    config "tests/nextflow.config"
 
     test("Test plate dataset") {
 
@@ -17,24 +17,6 @@ nextflow_pipeline {
         }
 
         then {
-
-            trace {
-                enabled = true
-                file = "${params.result_dir_path}/trace.txt"
-                overwrite = true
-            }
-
-            timeline {
-                enabled = true
-                file = "${params.result_dir_path}/timeline.html"
-                overwrite = true
-            }
-
-            report {
-                enabled = true
-                file = "${params.result_dir_path}/report.html"
-                overwrite = true
-            }
 
             assert workflow.success
             assert workflow.trace.tasks().size() == 2
