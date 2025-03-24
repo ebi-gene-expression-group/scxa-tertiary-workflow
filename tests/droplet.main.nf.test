@@ -10,7 +10,7 @@ nextflow_pipeline {
             params {
               dir_path = "test-data/test-droplet"
               output_path = "test-data/test-droplet-out"
-              technology = "dropet"
+              technology = "droplet"
               celltype_field = "authors_cell_type_-_ontology_labels"
             }
         }
