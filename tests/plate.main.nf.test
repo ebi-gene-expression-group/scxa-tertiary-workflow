@@ -2,23 +2,21 @@ nextflow_pipeline {
 
     name "Test Workflow main.nf - plate"
     script "main.nf"
+    config "./nextflow.config"
 
-    test("test_dataset_plate") {
+    test("Test plate dataset") {
 
         when {
             // the rest is shared config
             params {
                 technology = "plate"
-            }
-        }
-
-        then {
-
-            params{
                 dir_path = "test-data/test-plate"
                 output_path = null
                 result_dir_path = "${params.output_path ?: params.dir_path + '/results_plate'}"
             }
+        }
+
+        then {
 
             trace {
                 enabled = true
@@ -38,18 +36,8 @@ nextflow_pipeline {
                 overwrite = true
             }
 
-            assertAll(
-
-                //
-                // General assertions
-                //
-
-                // Did it finish successfully?
-                {assert workflow.success},
-
-                ).match()}
-
-            ) // end of assertAll()
+            assert workflow.success
+            assert workflow.trace.tasks().size() == 2
 
         }
     }
