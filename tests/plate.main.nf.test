@@ -1,0 +1,38 @@
+nextflow_pipeline {
+
+    name "Test Workflow main.nf - plate"
+    script "main.nf"
+
+    test("test_dataset_plate") {
+
+        when {
+            // the rest is shared config
+            params {
+                technology    = "plate"
+            }
+        }
+
+        then {
+
+            params{
+                dir_path = "test-data/test-plate"
+                output_path = params.dir_path + "/results_plate"
+            }
+
+            assertAll(
+
+                //
+                // General assertions
+                //
+
+                // Did it finish successfully?
+                {assert workflow.success},
+
+                ).match()}
+
+            ) // end of assertAll()
+
+        }
+    }
+
+}
