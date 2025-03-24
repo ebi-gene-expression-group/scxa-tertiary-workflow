@@ -28,8 +28,11 @@ jobs:
       - name: Set up nf-test
         uses: nf-core/setup-nf-test@v1
         with:
+          version: 0.9.2
           install-pdiff: false
 
       - name: Run nf-test
-        run: nf-test test tests/plate.main.nf.test --profile test -c nf-test.config --debug
-
+        run: |
+          export NXF_CONFIG_FILE=nf-test.config
+          export SCXA_HPC_QUEUE="null"
+          nf-test test tests/plate.main.nf.test --profile test --debug
