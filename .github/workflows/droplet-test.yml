@@ -34,7 +34,7 @@ jobs:
       - name: Run nf-test
         run: |
           export NXF_CONFIG_FILE=nf-test.config
-          SCXA_HPC_QUEUE="null"
+          export SCXA_HPC_QUEUE="null"
           nf-test test tests/droplet.main.nf.test --profile test --debug
 
 
