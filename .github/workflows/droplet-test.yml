@@ -9,3 +9,23 @@ on:
       - master
       - hackathon
   workflow_dispatch:
+
+jobs:
+  nf-test:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Set up Nextflow
+        uses: nf-core/setup-nextflow@v1
+
+      - name: Install nf-test
+        run: |
+          wget -qO- https://github.com/seqeralabs/nf-test/releases/latest/download/nf-test-linux-amd64 > /usr/local/bin/nf-test
+          chmod +x /usr/local/bin/nf-test
+
+      - name: Run nf-test
+        run: nf-test test tests/droplet.nf.test --profile test
+
+
