@@ -31,6 +31,6 @@ jobs:
           install-pdiff: false
 
       - name: Run nf-test
-        run: nf-test test tests/droplet.main.nf.test --profile test -c nf-test.config --debug
+        run: nf-test test tests/droplet.main.nf.test --profile test --debug
 
 
