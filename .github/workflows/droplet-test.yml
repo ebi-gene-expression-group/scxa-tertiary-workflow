@@ -20,12 +20,12 @@ jobs:
       - name: Set up Nextflow
         uses: nf-core/setup-nextflow@v1
 
-      - name: Install nf-test
-        run: |
-          wget -qO- https://github.com/seqeralabs/nf-test/releases/latest/download/nf-test-linux-amd64 > /usr/local/bin/nf-test
-          chmod +x /usr/local/bin/nf-test
+      - name: Set up nf-test
+        uses: nf-core/setup-nf-test@v1
+        with:
+          install-pdiff: false
 
       - name: Run nf-test
-        run: nf-test test tests/droplet.nf.test --profile test
+        run: nf-test init && nf-test test tests/droplet.nf.test --profile test
 
 
