@@ -1,1 +1,25 @@
+# nf-test script
+nextflow_pipeline {
 
+    name "Test Pipeline for droplet-based datasets"
+    script "main.nf"
+
+    test("Should run without failures") {
+
+        when {
+            params {
+              dir_path = "test-data/test-droplet"
+              output_path = "test-data/test-droplet-out"
+              technology = "dropet"
+              celltype_field = "authors_cell_type_-_ontology_labels"
+            }
+        }
+
+        then {
+            assert workflow.success
+            assert workflow.trace.tasks().size() == 2
+        }
+
+    }
+
+}
