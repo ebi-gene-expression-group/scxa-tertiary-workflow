@@ -8,7 +8,7 @@ nextflow_pipeline {
         when {
             // the rest is shared config
             params {
-                technology    = "plate"
+                technology = "plate"
             }
         }
 
@@ -16,7 +16,26 @@ nextflow_pipeline {
 
             params{
                 dir_path = "test-data/test-plate"
-                output_path = params.dir_path + "/results_plate"
+                output_path = null
+                result_dir_path = "${params.output_path ?: params.dir_path + '/results_plate'}"
+            }
+
+            trace {
+                enabled = true
+                file = "${params.result_dir_path}/trace.txt"
+                overwrite = true
+            }
+
+            timeline {
+                enabled = true
+                file = "${params.result_dir_path}/timeline.html"
+                overwrite = true
+            }
+
+            report {
+                enabled = true
+                file = "${params.result_dir_path}/report.html"
+                overwrite = true
             }
 
             assertAll(
