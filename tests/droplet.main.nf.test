@@ -2,6 +2,7 @@ nextflow_pipeline {
 
     name "Test Pipeline for droplet-based datasets"
     script "main.nf"
+    config "tests/nextflow.config"
 
     test("Should run without failures") {
 
