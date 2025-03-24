@@ -28,6 +28,7 @@ jobs:
       - name: Set up nf-test
         uses: nf-core/setup-nf-test@v1
         with:
+          version: 0.9.2
           install-pdiff: false
 
       - name: Run nf-test
