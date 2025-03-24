@@ -1,4 +1,3 @@
-# nf-test script
 nextflow_pipeline {
 
     name "Test Pipeline for droplet-based datasets"
