@@ -17,6 +17,11 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v4
 
+      - name: Singularity install with defaults
+        uses: singularityhub/install-singularity@main
+        with:
+          singularity-version: '4.1.4'
+
       - name: Set up Nextflow
         uses: nf-core/setup-nextflow@v1
 
@@ -26,6 +31,6 @@ jobs:
           install-pdiff: false
 
       - name: Run nf-test
-        run: nf-test init && nf-test test tests/droplet.nf.test --profile test
+        run: nf-test test tests/droplet.main.nf.test --profile test
 
 
