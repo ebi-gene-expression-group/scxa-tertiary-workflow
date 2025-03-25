@@ -8,6 +8,7 @@ process NEIGHBORS_FOR_UMAP {
     output:
         path "neighbors_${n_neighbors}.h5ad"
     script:
+    def args    = task.ext.args ?: ""
     """
         export PYTHONIOENCODING='utf-8'
         scanpy-neighbors \
@@ -24,5 +25,9 @@ process NEIGHBORS_FOR_UMAP {
             --output-format anndata \
             'neighbors_${n_neighbors}.h5ad'
 
+    """
+    stub:
+    """
+        touch "neighbors_${n_neighbors}.h5ad"
     """
 }

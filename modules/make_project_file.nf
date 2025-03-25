@@ -12,9 +12,11 @@ process MAKE_PROJECT_FILE {
         path normalise_data
         path find_markers
         path TNSEs_mix_UMAPs
+        
     output:
         path "project.h5ad"
     script:
+    def args    = task.ext.args ?: ""
     """
         export PYTHONIOENCODING='utf-8'
         ln -s $neighbors input.h5
@@ -39,4 +41,9 @@ process MAKE_PROJECT_FILE {
         python "${projectDir}/bin/final_project.py"
         mv output.h5 project.h5ad
     """
+    stub:
+    """
+        touch project.h5ad
+    """
+
 }

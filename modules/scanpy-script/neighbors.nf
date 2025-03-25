@@ -8,6 +8,7 @@ process NEIGHBORS {
         path 'neighbors.h5ad'
 
     script:
+    def args    = task.ext.args ?: ""
     """
         export PYTHONIOENCODING='utf-8'
         scanpy-neighbors \
@@ -22,6 +23,9 @@ process NEIGHBORS {
         --show-obj stdout \
         --output-format anndata \
         'neighbors.h5ad'
-
+    """
+    stub:
+    """
+        touch neighbors.h5ad
     """
 }

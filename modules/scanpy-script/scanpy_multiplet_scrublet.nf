@@ -9,6 +9,7 @@ process SCANPY_MULTIPLET_SCRUBLET {
         path 'scrublet.h5ad'
 
     script:
+    def args    = task.ext.args ?: ""
     """
         export PYTHONIOENCODING='utf-8'
         if [ -z "$batch_variable" ]; then
@@ -25,5 +26,9 @@ process SCANPY_MULTIPLET_SCRUBLET {
             $anndata \
             scrublet.h5ad
         fi
+    """
+    stub:
+    """
+        touch scrublet.h5ad
     """
 }

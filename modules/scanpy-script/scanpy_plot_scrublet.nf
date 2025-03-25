@@ -9,6 +9,7 @@ process SCANPY_PLOT_SCRUBLET {
         path 'scrublet.png'
 
     script:
+    def args    = task.ext.args ?: ""
     """
         export PYTHONIOENCODING='utf-8'
         scanpy-cli plot scrublet \
@@ -17,5 +18,9 @@ process SCANPY_PLOT_SCRUBLET {
         --scale-hist-sim "linear" \
         $anndata \
         scrublet.png
+    """
+    stub:
+    """
+        touch scrublet.png
     """
 }

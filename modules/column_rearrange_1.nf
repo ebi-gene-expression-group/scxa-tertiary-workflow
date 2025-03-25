@@ -1,9 +1,4 @@
-/*
- * Column_rearrange_1: Only keeps the specified columns and removes header
- */
-
 process COLUMN_REARRANGE_1 {
-    // Set the output file
     input:
       path genemeta
       val col
@@ -12,6 +7,7 @@ process COLUMN_REARRANGE_1 {
       path 'filtered_genemeta.txt'
 
     script:
+    def args    = task.ext.args ?: ""
     """
       # Find the column number of the specified gene_id column name
       col_num=\$(head -n1 "$genemeta" | tr '\\t' '\\n' | grep -n "^$col\$" | cut -d: -f1)
@@ -24,5 +20,10 @@ process COLUMN_REARRANGE_1 {
   
       # Extract the gene_id column (without the header)
       tail -n +2 "$genemeta" | cut -f\$col_num > filtered_genemeta.txt
+    """
+
+    stub:
+    """
+      touch filtered_genemeta.txt
     """
 }

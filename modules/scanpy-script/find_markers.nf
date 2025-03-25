@@ -1,4 +1,3 @@
-
 process FIND_MARKERS {
     publishDir "${params.result_dir_path}/markers", mode: 'copy', pattern: 'markers_*.tsv'
     errorStrategy { task.exitStatus in 137..140 ? 'retry' : 'ignore' }
@@ -12,6 +11,7 @@ process FIND_MARKERS {
 	path "markers_*.tsv"
 
     script:
+	def args    = task.ext.args ?: ""
     """
 	VAR="$merged_group_slotname"
         PREFIX="${params.slotname}_"
@@ -56,4 +56,9 @@ process FIND_MARKERS {
 	    exit \$command_exitcode
 	fi
     """
+	stub:
+	"""
+		touch "markers_${merged_group_slotname}.h5ad"
+		touch "markers_${merged_group_slotname}.tsv"
+	"""
 }

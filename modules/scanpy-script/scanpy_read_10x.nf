@@ -12,6 +12,7 @@ process SCANPY_READ_10X {
         path 'anndata.h5ad'
 
     script:
+    def args    = task.ext.args ?: ""
     """
         #ln -s $matrix matrix.mtx
         ln -s $genes genes.tsv
@@ -26,5 +27,9 @@ process SCANPY_READ_10X {
         --show-obj stdout \
         --output-format anndata \
         'anndata.h5ad'
+    """
+    stub:
+    """
+        touch anndata.h5ad
     """
 }

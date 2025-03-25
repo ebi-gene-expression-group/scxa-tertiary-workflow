@@ -9,6 +9,7 @@ process FIND_VARIABLE_GENES {
         path 'variable_genes.h5ad'
 
     script:
+    def args    = task.ext.args ?: ""
     """
         batch_variable_tag=""
         if [[ -n "$batch_variable" ]]; then
@@ -27,5 +28,9 @@ process FIND_VARIABLE_GENES {
         $anndata \
         --show-obj stdout \
         --output-format anndata 'variable_genes.h5ad'
+    """
+    stub:
+    """
+        touch variable_genes.h5ad
     """
 }

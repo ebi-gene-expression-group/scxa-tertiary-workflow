@@ -11,9 +11,10 @@ process RUN_TSNE {
 
     output:
         path "tsne_${perplexity_values}.h5ad"
-	path "tsne_perplexity_${perplexity_values}.tsv"
+	    path "tsne_perplexity_${perplexity_values}.tsv"
 
     script:
+    def args    = task.ext.args ?: ""
     """
             export PYTHONIOENCODING='utf-8'
             scanpy-run-tsne \
@@ -31,5 +32,10 @@ process RUN_TSNE {
             --output-format anndata \
             'tsne_${perplexity_values}.h5ad' \
             && mv 'embeddings_perplexity_${perplexity_values}.tsv' 'tsne_perplexity_${perplexity_values}.tsv'
+    """
+    stub:
+    """
+        touch "tsne_${perplexity_values}.h5ad"
+        touch "tsne_perplexity_${perplexity_values}.tsv"
     """
 }

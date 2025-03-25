@@ -8,6 +8,7 @@ process NORMALISE_INTERNAL_DATA {
         path 'normalised_internal_anndata.h5ad'
 
     script:
+    def args    = task.ext.args ?: ""
     """
         export PYTHONIOENCODING='utf-8'
         scanpy-normalise-data \
@@ -16,5 +17,9 @@ process NORMALISE_INTERNAL_DATA {
         --show-obj stdout \
         --output-format anndata \
         'normalised_internal_anndata.h5ad' 
+    """
+    stub:
+    """
+        touch normalised_internal_anndata.h5ad
     """
 }

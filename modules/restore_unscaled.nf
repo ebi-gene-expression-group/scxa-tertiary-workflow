@@ -8,6 +8,7 @@ process RESTORE_UNSCALED {
 	path "restore_unscaled_output_${anndata}.h5"
 
     script:
+	def args    = task.ext.args ?: ""
     """
 	export PYTHONIOENCODING='utf-8'
 	ln -s $anndata input.h5
@@ -15,4 +16,8 @@ process RESTORE_UNSCALED {
 	python ${projectDir}/bin/restore_unscaled.py
 	mv output.h5 'restore_unscaled_output_${anndata}.h5'
     """
+	stub:
+	"""
+		touch "restore_unscaled_output_${anndata}.h5"
+	"""
 }
