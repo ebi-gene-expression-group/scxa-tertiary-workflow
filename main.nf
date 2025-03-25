@@ -35,7 +35,7 @@ representation: ${params.representation}
 ===============================
 """
 
-include { SCXA_TERTIARY                 } from "${projectDir}/workflows/scxa_tertiary.nf"
+include { SCXA_TERTIARY } from "${projectDir}/workflows/scxa_tertiary.nf"
 
 workflow {
     SCXA_TERTIARY()
