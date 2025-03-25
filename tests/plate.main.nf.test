@@ -1,13 +1,12 @@
 nextflow_pipeline {
 
-    name "Test Workflow main.nf - plate"
+    name "Test Pipeline for plate-based datasets"
     script "main.nf"
     config "tests/nextflow.config"
 
-    test("Test plate dataset") {
+    test("Should run without failures") {
 
         when {
-            // the rest is shared config
             params {
                 technology = "plate"
                 dir_path = "/home/runner/work/scxa-tertiary-workflow/scxa-tertiary-workflow/test-data/test-plate"
@@ -17,11 +16,8 @@ nextflow_pipeline {
         }
 
         then {
-
             assert workflow.success
             assert workflow.trace.tasks().size() == 2
-
         }
     }
-
 }
