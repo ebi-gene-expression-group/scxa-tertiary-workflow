@@ -9,6 +9,7 @@ process SCANPY_FILTER_CELLS {
         path 'filtered_cell_anndata.h5ad'
 
     script:
+    def args    = task.ext.args ?: ""
     """
     n_counts=1500
     if [[ -n "$category" ]]; then
@@ -24,5 +25,9 @@ process SCANPY_FILTER_CELLS {
         --output-format anndata 'filtered_cell_anndata.h5ad' \
         --export-mtx ./ \
         $category
+    """
+    stub:
+    """
+        touch filtered_cell_anndata.h5ad
     """
 }

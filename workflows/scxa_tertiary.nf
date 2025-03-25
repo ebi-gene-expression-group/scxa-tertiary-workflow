@@ -3,9 +3,10 @@
     IMPORT MODULES
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 */
-include { COLUMN_REARRANGE_1            } from "${projectDir}/modules/scanpy-script/column_rearrange_1.nf"
-include { COLUMN_REARRANGE_2            } from "${projectDir}/modules/scanpy-script/column_rearrange_2.nf"
-include { MERGEGENEFILES                } from "${projectDir}/modules/scanpy-script/merge_gene_files.nf"
+include { COLUMN_REARRANGE_1            } from "${projectDir}/modules/column_rearrange_1.nf"
+include { COLUMN_REARRANGE_2            } from "${projectDir}/modules/column_rearrange_2.nf"
+include { MERGEGENEFILES                } from "${projectDir}/modules/merge_gene_files.nf"
+
 include { SCANPY_READ_10X               } from "${projectDir}/modules/scanpy-script/scanpy_read_10x.nf"
 include { SCANPY_MULTIPLET_SCRUBLET     } from "${projectDir}/modules/scanpy-script/scanpy_multiplet_scrublet.nf"
 include { SCANPY_PLOT_SCRUBLET          } from "${projectDir}/modules/scanpy-script/scanpy_plot_scrublet.nf"
@@ -22,9 +23,10 @@ include { NEIGHBORS_FOR_UMAP            } from "${projectDir}/modules/scanpy-scr
 include { RUN_TSNE                      } from "${projectDir}/modules/scanpy-script/run_tsne.nf"
 include { RUN_UMAP                      } from "${projectDir}/modules/scanpy-script/run_umap.nf"
 include { FIND_CLUSTERS                 } from "${projectDir}/modules/scanpy-script/find_clusters.nf"
-include { RESTORE_UNSCALED              } from "${projectDir}/modules/scanpy-script/restore_unscaled.nf"
 include { FIND_MARKERS                  } from "${projectDir}/modules/scanpy-script/find_markers.nf"
-include { MAKE_PROJECT_FILE             } from "${projectDir}/modules/scanpy-script/make_project_file.nf"
+
+include { RESTORE_UNSCALED              } from "${projectDir}/modules/restore_unscaled.nf"
+include { MAKE_PROJECT_FILE             } from "${projectDir}/modules/make_project_file.nf"
 
 workflow SCXA_TERTIARY {
 

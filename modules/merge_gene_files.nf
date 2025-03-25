@@ -10,6 +10,7 @@ process MERGEGENEFILES {
       path 'merged_genemeta.tsv'
 
     script:
+    def args    = task.ext.args ?: ""
     """
         # Sort both files by the first column for join compatibility
         sort -k1,1 "$gene" > sorted_gene.txt
@@ -17,5 +18,9 @@ process MERGEGENEFILES {
         
         # Perform a left join to keep all data from gene file
         join -a 1 -t \$'\t' -o 0,1.2,2.2 sorted_gene.txt sorted_genemeta.txt | cut -f1,3 > merged_genemeta.tsv
+    """
+    stub:
+    """
+      touch merged_genemeta.tsv
     """
 }

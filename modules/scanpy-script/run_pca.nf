@@ -8,6 +8,7 @@ process RUN_PCA {
         path 'PCA.h5ad'
 
     script:
+    def args    = task.ext.args ?: ""
     """
         export PYTHONIOENCODING='utf-8'
         scanpy-run-pca \
@@ -19,5 +20,9 @@ process RUN_PCA {
         --show-obj stdout \
         --output-format anndata \
         'PCA.h5ad'
+    """
+    stub:
+    """
+        touch PCA.h5ad
     """
 }

@@ -6,9 +6,10 @@ process FIND_CLUSTERS {
         tuple path(anndata), val(resolution)
     output:
         path "clusters_${resolution}.h5ad"
-	path "clusters_resolution_${resolution}.tsv"
+	    path "clusters_resolution_${resolution}.tsv"
 
     script:
+    def args    = task.ext.args ?: ""
     """
         export PYTHONIOENCODING='utf-8'
         scanpy-find-cluster louvain \
@@ -25,5 +26,10 @@ process FIND_CLUSTERS {
         'clusters_${resolution}.h5ad'
 	
 	mv 'output.tsv' 'clusters_resolution_${resolution}.tsv'
+    """
+    stub:
+    """
+        touch clusters_${resolution}.h5ad
+        touch clusters_resolution_${resolution}.tsv
     """
 }

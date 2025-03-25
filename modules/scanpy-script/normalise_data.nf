@@ -14,6 +14,7 @@ process NORMALISE_DATA {
 	path 'genes.tsv'
 
     script:
+    def args    = task.ext.args ?: ""
     """
         export PYTHONIOENCODING='utf-8'
         scanpy-normalise-data \
@@ -24,5 +25,12 @@ process NORMALISE_DATA {
         --output-format anndata \
         'normalised_anndata.h5ad' \
         --export-mtx ./
+    """
+    stub:
+    """
+        touch normalised_anndata.h5ad
+        touch matrix.mtx
+        touch barcodes.tsv
+        touch genes.tsv
     """
 }

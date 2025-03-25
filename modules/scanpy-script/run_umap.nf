@@ -13,6 +13,7 @@ process RUN_UMAP {
         path "umap_n_neighbors_*.tsv"
 
     script:
+    def args    = task.ext.args ?: ""
     """
 	export PYTHONIOENCODING='utf-8'
 	echo \$PYTHONIOENCODING
@@ -37,6 +38,10 @@ process RUN_UMAP {
             --output-format anndata \
             "umap_\${n_number}.h5ad" \
             && mv "embeddings_neighbors_n_\${n_number}.tsv" umap_n_\${n_number}.tsv
-
+    """
+    stub:
+    """
+        touch umap_${anndata}.h5ad
+        touch umap_n_neighbors_${anndata}.tsv
     """
 }

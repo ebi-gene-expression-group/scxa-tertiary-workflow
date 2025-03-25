@@ -8,6 +8,7 @@ process HARMONY_BATCH {
         path 'harmony.h5ad'
 
     script:
+    def args    = task.ext.args ?: ""
     """
         export PYTHONIOENCODING='utf-8'
         if [[ -n "$batch_variable" ]]; then
@@ -26,5 +27,9 @@ process HARMONY_BATCH {
             cp $anndata 'harmony.h5ad'
         fi
 
+    """
+    stub:
+    """
+        touch harmony.h5ad
     """
 }

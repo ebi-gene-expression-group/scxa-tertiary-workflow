@@ -15,6 +15,7 @@ process SCANPY_FILTER_GENES {
         path 'genes.tsv'
 
     script:
+    def args    = task.ext.args ?: ""
     """
         export PYTHONIOENCODING='utf-8'
         scanpy-filter-genes \
@@ -26,5 +27,12 @@ process SCANPY_FILTER_GENES {
         --output-format anndata \
         'filtered_gene_anndata.h5ad' \
         --export-mtx ./
+    """
+    stub:
+    """
+        touch filtered_gene_anndata.h5ad
+        touch matrix.mtx
+        touch barcodes.tsv
+        touch genes.tsv
     """
 }

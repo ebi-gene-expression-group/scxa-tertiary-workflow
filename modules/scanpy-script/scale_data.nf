@@ -8,6 +8,7 @@ process SCALE_DATA {
         path 'scaled_anndata.h5ad'
 
     script:
+    def args    = task.ext.args ?: ""
     """
         export PYTHONIOENCODING='utf-8'
         scanpy-scale-data \
@@ -15,6 +16,9 @@ process SCALE_DATA {
         --output-format "anndata" \
         $anndata \
         'scaled_anndata.h5ad'
-
+    """
+    stub:
+    """
+        touch scaled_anndata.h5ad
     """
 }
