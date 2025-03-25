@@ -74,3 +74,15 @@ We thank the following people and teams for their extensive assistance in the de
 
 For now, if you use the workflow for your analysis please cite it using the following doi: [10.1093/nar/gkad1021](https://doi.org/10.1093/nar/gkad1021)
 
+## Acknowledging nf-core
+
+This pipeline uses code and infrastructure developed and maintained by the [nf-core](https://nf-co.re) community, reused here under the [MIT license](https://github.com/nf-core/tools/blob/master/LICENSE).
+ 
+> The nf-core framework for community-curated bioinformatics pipelines.
+>
+> Philip Ewels, Alexander Peltzer, Sven Fillinger, Harshil Patel, Johannes Alneberg, Andreas Wilm, Maxime Ulysse Garcia, Paolo Di Tommaso & Sven Nahnsen.
+>
+> Nat Biotechnol. 2020 Feb 13. doi: 10.1038/s41587-020-0439-x.
+> In addition, references of tools and data used in this pipeline are as follows:
+
+
