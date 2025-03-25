@@ -3,7 +3,7 @@
 [![Nextflow](https://img.shields.io/badge/nextflow%20DSL2-%E2%89%A524.04.2-23aa62.svg)](https://www.nextflow.io/)
 [![run with singularity](https://img.shields.io/badge/run%20with-singularity-1d355c.svg?labelColor=000000)](https://sylabs.io/docs/)
 [![nf-test](https://img.shields.io/badge/unit_tests-nf--test-337ab7.svg)](https://www.nf-test.com)
-[![Follow on Twitter](http://img.shields.io/badge/twitter-%40ExpressionAtlas-1DA1F2?labelColor=000000&logo=twitter)](https://twitter.com/ExpressionAtlas)
+
 
 ## Introduction
 Tertiary component for [Single-Cell Expression Atlas](http://www.ebi.ac.uk/gxa/sc/) workflows, focused on post-processing and advanced analyses like normalization, PCA, clustering, t-SNE, and UMAP visualizations.
@@ -67,6 +67,7 @@ ebi-gene-expression-group/scxa-tertiary-workflow was originally written by Anil 
 We thank the following people and teams for their extensive assistance in the development of this pipeline:
 
 - @imkhoibui
+- @jcmarca
 - @arschat
 
 ## Citations
