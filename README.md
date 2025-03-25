@@ -31,7 +31,7 @@ Ensure the following files are present in the directory:
 ### Requirements
 
 - Nextflow
-- Singularity
+- Singularity or Docker
   
 ### High-performance computing
 
@@ -64,7 +64,7 @@ If `[--output_path <PATH>]` is not specified results will be `<EXP-ID with path>
 
 ebi-gene-expression-group/scxa-tertiary-workflow was originally written by Anil Thanki, Iris Yu and Pedro Madrigal, based on a previous Galaxy workflow developed by Pablo Moreno and Jonathan Manning.
 
-We thank the following people and teams for their assistance in the development of this pipeline:
+We thank the following people and teams for their extensive assistance in the development of this pipeline:
 
 - @imkhoibui
 - @arschat
