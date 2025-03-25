@@ -38,7 +38,7 @@ representation: ${params.representation}
 /*
  * Column_rearrange_1: Only keeps the specified columns and removes header
  */
-process Column_rearrange_1 {
+process COLUMN_REARRANGE_1 {
     // Set the output file
     input:
       path genemeta
@@ -66,7 +66,7 @@ process Column_rearrange_1 {
 /*
  * Column_rearrange_2: Only keeps the specified columns and removes header
  */
-process Column_rearrange_2 {
+process COLUMN_REARRANGE_2 {
     // Set the output file
     input:
       path genemeta
@@ -96,7 +96,7 @@ process Column_rearrange_2 {
 /*
  * mergeGeneFiles: Merges gene file with genemeta on column 1, and keeps column1 and 4
  */
-process mergeGeneFiles {
+process MERGEGENEFILES {
     input:
       path gene
       path filtered_genemeta
@@ -115,7 +115,7 @@ process mergeGeneFiles {
     """
 }
 
-process scanpy_read_10x {
+process SCANPY_READ_10X {
     container params.scanpy_scripts_container
     
     input:
@@ -146,7 +146,7 @@ process scanpy_read_10x {
     """
 }
 
-process scanpy_multiplet_scrublet {
+process SCANPY_MULTIPLET_SCRUBLET {
     container params.scanpy_scripts_container
     
     input:
@@ -176,7 +176,7 @@ process scanpy_multiplet_scrublet {
     """
 }
 
-process scanpy_plot_scrublet {
+process SCANPY_PLOT_SCRUBLET {
     publishDir params.result_dir_path, mode: 'copy', pattern: '(scrublet.png)'
     container params.scanpy_scripts_container
     
@@ -198,7 +198,7 @@ process scanpy_plot_scrublet {
     """
 }
 
-process scanpy_filter_cells {
+process SCANPY_FILTER_CELLS {
     container params.scanpy_scripts_container
     
     input:
@@ -227,7 +227,7 @@ process scanpy_filter_cells {
     """
 }
 
-process scanpy_filter_genes {
+process SCANPY_FILTER_GENES {
     publishDir "${params.result_dir_path}/matrices/raw_filtered", mode: 'copy', pattern: 'matrix.mtx'
     publishDir "${params.result_dir_path}/matrices/raw_filtered", mode: 'copy', pattern: 'barcodes.tsv'
     publishDir "${params.result_dir_path}/matrices/raw_filtered", mode: 'copy', pattern: 'genes.tsv'
@@ -258,7 +258,7 @@ process scanpy_filter_genes {
     """
 }
 
-process normalise_data {
+process NORMALISE_DATA {
     publishDir "${params.result_dir_path}/matrices/filtered_normalised", mode: 'copy', pattern: 'matrix.mtx'
     publishDir "${params.result_dir_path}/matrices/filtered_normalised", mode: 'copy', pattern: 'barcodes.tsv'
     publishDir "${params.result_dir_path}/matrices/filtered_normalised", mode: 'copy', pattern: 'genes.tsv'
@@ -287,7 +287,7 @@ process normalise_data {
     """
 }
 
-process normalise_internal_data {
+process NORMALISE_INTERNAL_DATA {
     container params.scanpy_scripts_container
     
     input:
@@ -308,7 +308,7 @@ process normalise_internal_data {
     """
 }
 
-process find_variable_genes {
+process FIND_VARIABLE_GENES {
     container params.scanpy_scripts_container
 
     input:
@@ -340,7 +340,7 @@ process find_variable_genes {
     """
 }
 
-process scale_data {
+process SCALE_DATA {
     container params.scanpy_scripts_container
 
     input:
@@ -361,7 +361,7 @@ process scale_data {
     """
 }
 
-process run_pca {
+process RUN_PCA {
     container params.scanpy_scripts_container
 
     input:
@@ -385,7 +385,7 @@ process run_pca {
     """
 }
 
-process harmony_batch {
+process HARMONY_BATCH {
     container params.scanpy_scripts_container
 
     input:
@@ -416,7 +416,7 @@ process harmony_batch {
     """
 }
 
-process neighbors {
+process NEIGHBORS {
     container params.scanpy_scripts_container
 
     input:
@@ -444,7 +444,7 @@ process neighbors {
     """
 }
 
-process neighbors_for_umap {
+process NEIGHBORS_FOR_UMAP {
     container params.scanpy_scripts_container
 
 
@@ -473,7 +473,7 @@ process neighbors_for_umap {
     """
 }
 
-process find_clusters {
+process FIND_CLUSTERS {
     publishDir "${params.result_dir_path}/clusters", mode: 'copy', pattern: 'clusters_resolution_*.tsv'
     container params.scanpy_scripts_container
 
@@ -503,7 +503,7 @@ process find_clusters {
     """
 }
 
-process restore_unscaled {
+process RESTORE_UNSCALED {
     container params.scanpy_scripts_container
 
     input:
@@ -522,7 +522,7 @@ process restore_unscaled {
     """
 }
 
-process find_markers {
+process FIND_MARKERS {
     publishDir "${params.result_dir_path}/markers", mode: 'copy', pattern: 'markers_*.tsv'
     errorStrategy { task.exitStatus in 137..140 ? 'retry' : 'ignore' }
     container params.scanpy_scripts_container
@@ -581,7 +581,7 @@ process find_markers {
     """
 }
 
-process run_umap {
+process RUN_UMAP {
     publishDir "${params.result_dir_path}/umap", mode: 'copy', pattern: 'umap_n_neighbors_*.tsv'
 
     errorStrategy { task.exitStatus in 137..140 ? 'retry' : 'ignore' }
@@ -624,7 +624,7 @@ process run_umap {
     """
 }
 
-process run_tsne {
+process RUN_TSNE {
     publishDir "${params.result_dir_path}/tsne", mode: 'copy', pattern: 'tsne_perplexity_*\\.tsv'
 
     errorStrategy { task.exitStatus in 137..140 ? 'retry' : 'ignore' }
@@ -660,7 +660,7 @@ process run_tsne {
     """
 }
 
-process make_project_file {
+process MAKE_PROJECT_FILE {
     publishDir params.result_dir_path, mode: 'copy'
 
     errorStrategy { task.exitStatus in 137..140 ? 'retry' : 'ignore' }
@@ -703,149 +703,8 @@ process make_project_file {
     """
 }
 
+include { SCXA_TERTIARY                 } from "${projectDir}/workflows/scxa_tertiary.nf"
+
 workflow {
-
-    // Create input channel (single file via CLI parameter)
-    genemeta = Channel.fromPath("${params.dir_path}/genes_metadata.tsv")
-    genes = Channel.fromPath("${params.dir_path}/genes.tsv")
-    barcodes = Channel.fromPath("${params.dir_path}/barcodes.tsv")
-    matrix = Channel.fromPath("${params.dir_path}/matrix.mtx")
-    cellmeta = Channel.fromPath("${params.dir_path}/cell_metadata.tsv")
-    neighbors_ch = channel.fromList(params.neighbor_values)
-    perplexity_ch = channel.fromList(params.perplexity_values)
-    resolution_ch = channel.fromList(params.resolution_values)
-    merged_group_slotname_ch = Channel.fromList(params.merged_group_slotname)
-
-    Column_rearrange_1(
-        genemeta, 
-        "gene_id"
-    )
-    Column_rearrange_2(
-        genemeta, 
-        "gene_id", 
-        "gene_name"
-    )
-    mergeGeneFiles(
-        genes,
-        Column_rearrange_2.out
-    )
-    scanpy_read_10x(
-        matrix,
-        mergeGeneFiles.out,
-        barcodes,
-        cellmeta,
-        genemeta
-    )
-
-    if ( params.technology == "droplet" ) {
-        SCRUBLET_ch = scanpy_multiplet_scrublet(
-            scanpy_read_10x.out,
-            params.batch_variable
-        )
-        scanpy_plot_scrublet(
-            SCRUBLET_ch
-        )
-        scanpy_filter_cells(
-            SCRUBLET_ch,
-            "--category predicted_doublet False"
-        )
-    }
-    else {
-        scanpy_filter_cells(
-            scanpy_read_10x.out,
-            ""
-        )
-    }
-
-    scanpy_filter_genes(
-        scanpy_filter_cells.out,
-        Column_rearrange_1.out[0]
-    )
-    normalise_data(
-        scanpy_filter_genes.out[0]
-    )
-    normalise_internal_data(
-        scanpy_filter_genes.out[0]
-    )
-    find_variable_genes(
-        normalise_internal_data.out,
-        params.batch_variable
-    )
-
-    if ( params.technology == "droplet" ) {
-        scale_data(
-            find_variable_genes.out
-        )
-        run_pca(
-            scale_data.out
-        )
-    }
-    else {
-        run_pca(
-            find_variable_genes.out
-        )
-    }
-
-    harmony_batch(
-        run_pca.out,
-        params.batch_variable
-    )
-    neighbors(
-        harmony_batch.out,
-        params.representation
-    )
-    neighbors_for_umap(
-        harmony_batch.out.combine(neighbors_ch),
-        params.representation
-    )
-    TNSEs_ch = run_tsne(
-        harmony_batch.out.combine(perplexity_ch),
-        params.representation
-    )[0]
-    //TNSEs_ch
-    //    .filter { it.exitStatus == 0 }
-
-    UMAPs_ch = run_umap(
-        neighbors_for_umap.out.flatten()
-    )[0]
-    //UMAPs_ch
-   //     .filter { it.exitStatus == 0 }
-    find_clusters(
-        neighbors.out.combine(resolution_ch)
-    )
-
-    // Combine the outputs of find_clusters and neighbors processes
-    combined_outputs = find_clusters.out[0].mix(neighbors.out)
-
-    if ( params.technology == "droplet" ) {
-        restore_unscaled (
-	    combined_outputs.combine(normalise_internal_data.out)
-    	)
-	restore_unscaled_files = restore_unscaled.out.map { file ->
-	    // Extract the sample number from the file name
-	    def sampleNumber = file.baseName.replaceFirst('restore_unscaled_output_', '').replaceFirst('clusters', params.slotname).replaceFirst('neighbors',params.celltype_field).replaceFirst('.h5ad','')
-	    [file, sampleNumber] // Create a tuple with sample number and file
-	}
-	find_markers(
-	    restore_unscaled_files
-    	)
-    }
-    else {
-	processed_files = combined_outputs.map { file ->
-         // Extract the sample number from the file name
-         def sampleNumber = file.baseName.replaceFirst('clusters', params.slotname).replaceFirst('neighbors',params.celltype_field)
-         [file, sampleNumber] // Create a tuple with sample number and file
-	}
-        find_markers(
-	    processed_files
-    	)
-    }
-    make_project_file(
-	neighbors.out,
-	scanpy_read_10x.out,
-	scanpy_filter_genes.out[0],
-	normalise_data.out[0],
-	find_markers.out[0].collect(),
-	TNSEs_ch.mix(UMAPs_ch).collect()
-    )
+    SCXA_TERTIARY()
 }
