@@ -64,10 +64,3 @@ jobs:
       - name: run nf-core lint
         run: nf-core pipelines lint --dir ${{ github.workspace }} --show-passed
 
-      - name: Upload lint results
-        uses: actions/upload-artifact@v3
-        if: always()
-        with:
-          name: lint-results
-          path: lint_results.txt
-    
