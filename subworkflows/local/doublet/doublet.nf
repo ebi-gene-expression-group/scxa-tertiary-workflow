@@ -1,6 +1,6 @@
-include { scanpy_plot_scrublet } from '../../../main'
-include { scanpy_multiplet_scrublet } from '../../../main'
-params.scanpy_scripts_container = "quay.io/biocontainers/scanpy-scripts:1.1.2--pypyhdfd78af_1"
+include { SCANPY_MULTIPLET_SCRUBLET  } from '../../../modules/scanpy-scripts/scanpy_multiplet_scrublet'
+include { SCANPY_PLOT_SCRUBLET } from '../../../modules/scanpy-scripts/scanpy_plot_scrublet'
+
 
 // fake process
 process doublet_method_one {
@@ -42,7 +42,7 @@ process doublet_method_two {
  * requires different processes to output hd5a anndata
  */
 process MAJORITY_VOTE_DOUBLET {
-    container params.scanpy_scripts_container
+    container "quay.io/biocontainers/scanpy-scripts:1.1.2--pypyhdfd78af_1"
     publishDir params.result_dir_path, mode: 'copy', pattern: '.h5ad'
     input:
         val methods 
@@ -79,8 +79,8 @@ def runDoubletProcess(method, adata_ch, batch_var=channel.empty()) {
             return doublet_method_two(adata_ch, batch_var)
 
         case 'scrublet':
-            scrublet_result = scanpy_multiplet_scrublet(adata_ch, batch_var)
-            scanpy_plot_scrublet( adata_ch )
+            scrublet_result = SCANPY_MULTIPLET_SCRUBLET(adata_ch, batch_var)
+            SCANPY_PLOT_SCRUBLET( adata_ch )
             return scrublet_result 
 
         default:
@@ -98,7 +98,6 @@ workflow RUN_DOUBLET{
         hd_ch // channel for hd5a file
         
     main:
-        println params.result_dir_path
         methods = params.doublet_methods.split(',') // split methods into list
         doublet_filt_thresh = channel.value(params.doublet_filter)
         
@@ -129,6 +128,7 @@ workflow RUN_DOUBLET{
 
 workflow {
     main:
+        
         hd5a = channel.fromPath(params.input_hd5a)
         RUN_DOUBLET(hd5a)
 }
