@@ -55,6 +55,11 @@ nextflow run main.nf --slurm -resume --dir_path <EXP-ID with path> --technology 
 - `--technology droplet`: Specifies that the data is droplet-based. This enables additional steps for multiplet detection (using Scrublet) and doublet removal.
 - The remaining parameters are the same as for the plate-based run.
 
+#### Running the workflow for SCEA
+
+If running for Single-cell Expression Atlas, include the Atlas-specific config by adding `-c atlas.config` to the Nextflow command.
+
+
 ### Output
 
 If `[--output_path <PATH>]` is not specified results will be `<EXP-ID with path>/results` dir. 
@@ -84,5 +89,6 @@ This pipeline uses code and infrastructure developed and maintained by the [nf-c
 >
 > Nat Biotechnol. 2020 Feb 13. doi: 10.1038/s41587-020-0439-x.
 > In addition, references of tools and data used in this pipeline are as follows:
+
 
 
