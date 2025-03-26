@@ -2,39 +2,75 @@ include { SCANPY_MULTIPLET_SCRUBLET  } from '../../../modules/scanpy-scripts/sca
 include { SCANPY_PLOT_SCRUBLET } from '../../../modules/scanpy-scripts/scanpy_plot_scrublet'
 
 
-// fake process
-process doublet_method_one {
-    publishDir params.result_dir_path, mode: 'copy', pattern: '.h5ad'
+process SCANPY_MULTIPLET_SCRUBLET3 {
+    container params.scanpy_scripts_container
+    
     input:
         path anndata
         val batch_variable
 
     output:
-        path 'method_one.hd5a'
+        path 'scrublet3.h5ad'
 
     script:
+    def args    = task.ext.args ?: ""
     """
-       cp $anndata method_one.hd5a
+        export PYTHONIOENCODING='utf-8'
+        if [ -z "$batch_variable" ]; then
+            scanpy-cli multiplet scrublet \
+            --input-format 'anndata' \
+            --output-format 'anndata' \
+            $anndata \
+            scrublet3.h5ad
+        else
+            scanpy-cli multiplet scrublet \
+            --input-format 'anndata' \
+            --output-format 'anndata' \
+            --batch-key "$batch_variable" \
+            $anndata \
+            scrublet3.h5ad
+        fi
+    """
+    stub:
+    """
+        touch scrublet3.h5ad
     """
 }
 
-// fake doublet process takes h5ad output h5ad
-process doublet_method_two {
-    publishDir params.result_dir_path, mode: 'copy', pattern: '.h5ad'
+process SCANPY_MULTIPLET_SCRUBLET2 {
+    container params.scanpy_scripts_container
+    
     input:
         path anndata
         val batch_variable
 
     output:
-        path 'method_two.hd5a'
+        path 'scrublet2.h5ad'
 
     script:
+    def args    = task.ext.args ?: ""
     """
-       cp $anndata method_two.hd5a
+        export PYTHONIOENCODING='utf-8'
+        if [ -z "$batch_variable" ]; then
+            scanpy-cli multiplet scrublet \
+            --input-format 'anndata' \
+            --output-format 'anndata' \
+            $anndata \
+            scrublet2.h5ad
+        else
+            scanpy-cli multiplet scrublet \
+            --input-format 'anndata' \
+            --output-format 'anndata' \
+            --batch-key "$batch_variable" \
+            $anndata \
+            scrublet3.h5ad
+        fi
+    """
+    stub:
+    """
+        touch scrublet2.h5ad
     """
 }
-
-
 
 
 /*
@@ -62,7 +98,7 @@ process MAJORITY_VOTE_DOUBLET {
 
 // add new doublet finding modules in here
 def runDoubletProcess(method, adata_ch, batch_var=channel.empty()) {
-    def available_methods = ['one', 'two', 'scrublet'] // add new methods and tool names here
+    def available_methods = ['scrublet1', 'scrublet2', 'scrublet'] // add new methods and tool names here
     // check if user arguments match available methods
     if (!available_methods.contains(method)) {
             error """
@@ -72,15 +108,15 @@ def runDoubletProcess(method, adata_ch, batch_var=channel.empty()) {
     }
     // run all methods
     switch(method) {
-        case 'one':
-            return doublet_method_one(adata_ch, batch_var)
+        case 'scrublet1':
+            return SCANPY_MULTIPLET_SCRUBLET2(adata_ch, batch_var)
 
-        case 'two':
-            return doublet_method_two(adata_ch, batch_var)
+        case 'scrublet2':
+            return SCANPY_MULTIPLET_SCRUBLET3(adata_ch, batch_var)
 
         case 'scrublet':
             scrublet_result = SCANPY_MULTIPLET_SCRUBLET(adata_ch, batch_var)
-            SCANPY_PLOT_SCRUBLET( adata_ch )
+            SCANPY_PLOT_SCRUBLET( scrublet_result )
             return scrublet_result 
 
         default:
@@ -88,7 +124,6 @@ def runDoubletProcess(method, adata_ch, batch_var=channel.empty()) {
     }
 }
 
-params.batch_variable = ""
 /*
 * this is heavily borrowed from nf-core/scdownstream
 */
@@ -96,19 +131,20 @@ workflow RUN_DOUBLET{
 
     take:
         hd_ch // channel for hd5a file
-        
+        batch_var
+        methods_str
+        doublet_filt
     main:
-        methods = params.doublet_methods.split(',') // split methods into list
-        doublet_filt_thresh = channel.value(params.doublet_filter)
+        methods = methods_str.split(',') // split methods into list
+        doublet_filt_thresh = channel.value(doublet_filt)
         
         result_ch = channel.empty()
         methods.each {
-            method -> result_ch = result_ch.concat(runDoubletProcess(method, hd_ch, params.batch_variable))
+            method -> result_ch = result_ch.concat(runDoubletProcess(method, hd_ch, batch_var))
         }
 
         // perform majority voting 
-        MAJORITY_VOTE_DOUBLET(channel.value(params.doublet_methods), result_ch.collect(),  doublet_filt_thresh)
-
+        majority_ch = MAJORITY_VOTE_DOUBLET(channel.value(params.doublet_methods), result_ch.collect(),  doublet_filt_thresh)
         /* In case the pipeline is allowed to handle mutilple different datasets at once in the future
 
         result = methods.collectEntries {
@@ -123,12 +159,15 @@ workflow RUN_DOUBLET{
         
 
     emit:
-        result = result_ch
+        result = majority_ch
 }
 
 workflow {
     main:
         
         hd5a = channel.fromPath(params.input_hd5a)
-        RUN_DOUBLET(hd5a)
+        RUN_DOUBLET(hd5a,
+            batch_var,
+            methods,
+            doublet_filt_thresh)
 }
