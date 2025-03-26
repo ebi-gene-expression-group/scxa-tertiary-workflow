@@ -54,4 +54,4 @@ jobs:
           EOF
 
       - name: run nf-core lint
-        run: nf-core pipelines lint --dir .
+        run: nf-core pipelines lint --dir /home/runner/work/scxa-tertiary-workflow/scxa-tertiary-workflow
