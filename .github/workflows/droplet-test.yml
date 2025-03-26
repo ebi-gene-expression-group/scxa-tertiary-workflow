@@ -39,4 +39,9 @@ jobs:
           export SCXA_HPC_QUEUE="null"
           nf-test test tests/droplet.main.nf.test --profile test --debug
 
+      - name: Run nf-test without optional celltype_field
+        run: |
+          export NXF_CONFIG_FILE=nf-test.config
+          export SCXA_HPC_QUEUE="null"
+          nf-test test tests/droplet_no_celltype_field.main.nf.test --profile test --debug
 
