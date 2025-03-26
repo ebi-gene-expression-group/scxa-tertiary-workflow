@@ -57,6 +57,10 @@ jobs:
             schema_params: False
           EOF
 
+
+      - name: Debug .nf-core.yml
+        run: cat .nf-core.yml
+
       - name: run nf-core lint
-        run: nf-core pipelines lint --dir ${GITHUB_WORKSPACE} --show-passed --verbose
+        run: nf-core pipelines lint --dir ${GITHUB_WORKSPACE} --show-passed
 
