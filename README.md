@@ -55,9 +55,11 @@ nextflow run main.nf --slurm -resume --dir_path <EXP-ID with path> --technology 
 - `--technology droplet`: Specifies that the data is droplet-based. This enables additional steps for multiplet detection (using Scrublet) and doublet removal.
 - The remaining parameters are the same as for the plate-based run.
 
+The workflow uses Singularity by default, but users can add the `-profile docker` to run using Docker.
+
 #### Running the workflow for SCEA
 
-If running for Single-cell Expression Atlas, include the Atlas-specific config by adding `-c atlas.config` to the Nextflow command.
+If running for Single-cell Expression Atlas, specify the Atlas-specific profile by adding `-profile atlas` to the Nextflow command.
 
 
 ### Output
