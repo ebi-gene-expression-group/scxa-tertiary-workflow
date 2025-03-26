@@ -1,0 +1,22 @@
+nextflow_pipeline {
+
+    name "Test Pipeline for droplet-based datasets without celltype_field"
+    script "main.nf"
+    config "tests/nextflow.config"
+
+    test("Should run without failures") {
+
+        when {
+            params {
+              dir_path = "/home/runner/work/scxa-tertiary-workflow/scxa-tertiary-workflow/test-data/test-droplet"
+              output_path = "test-data/test-droplet-out"
+              technology = "droplet"
+            }
+        }
+
+        then {
+            assert workflow.success
+            assert workflow.trace.tasks().size() == 74
+        }
+    }
+}
