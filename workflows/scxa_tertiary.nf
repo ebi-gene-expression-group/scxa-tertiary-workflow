@@ -8,8 +8,9 @@ include { COLUMN_REARRANGE_2            } from "${projectDir}/modules/column_rea
 include { MERGEGENEFILES                } from "${projectDir}/modules/merge_gene_files.nf"
 
 include { SCANPY_READ_10X               } from "${projectDir}/modules/scanpy-scripts/scanpy_read_10x.nf"
-include { SCANPY_MULTIPLET_SCRUBLET     } from "${projectDir}/modules/scanpy-scripts/scanpy_multiplet_scrublet.nf"
-include { SCANPY_PLOT_SCRUBLET          } from "${projectDir}/modules/scanpy-scripts/scanpy_plot_scrublet.nf"
+include { RUN_DOUBLET     } from "${projectDir}/subworkflows/local/doublet/doublet.nf"
+//include { SCANPY_MULTIPLET_SCRUBLET     } from "${projectDir}/modules/scanpy-scripts/scanpy_multiplet_scrublet.nf"
+//include { SCANPY_PLOT_SCRUBLET          } from "${projectDir}/modules/scanpy-scripts/scanpy_plot_scrublet.nf"
 include { SCANPY_FILTER_CELLS           } from "${projectDir}/modules/scanpy-scripts/scanpy_filter_cells.nf"
 include { SCANPY_FILTER_GENES           } from "${projectDir}/modules/scanpy-scripts/scanpy_filter_genes.nf"
 include { NORMALISE_DATA                } from "${projectDir}/modules/scanpy-scripts/normalise_data.nf"
@@ -63,13 +64,13 @@ workflow SCXA_TERTIARY {
     )
 
     if ( params.technology == "droplet" ) {
-        SCRUBLET_ch = SCANPY_MULTIPLET_SCRUBLET(
+        SCRUBLET_ch = RUN_DOUBLET(
             SCANPY_READ_10X.out,
-            params.batch_variable
-        )
-        SCANPY_PLOT_SCRUBLET(
-            SCRUBLET_ch
-        )
+            params.batch_variable,
+            params.doublet_methods,
+            params.doublet_filter_thresh
+        ).result
+
         SCANPY_FILTER_CELLS(
             SCRUBLET_ch,
             "--category predicted_doublet False"
