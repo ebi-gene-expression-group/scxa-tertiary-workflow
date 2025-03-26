@@ -71,9 +71,9 @@ ebi-gene-expression-group/scxa-tertiary-workflow was originally written by [Anil
 
 We thank the following people and teams for their extensive assistance in the development of this pipeline:
 
-- [imkhoibui](https://github.com/imkhoibui)
-- [jcmarca](https://github.com/jcmarca)
-- [arschat](https://github.com/arschat)
+- [Khoi Bui Dinh](https://github.com/imkhoibui)
+- [Jose Marugan](https://github.com/jcmarca)
+- [Arsenios Chatzigeorgiou](https://github.com/arschat)
 
 ## Citations
 
