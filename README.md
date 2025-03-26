@@ -57,3 +57,8 @@ nextflow run main.nf --slurm -resume --dir_path <EXP-ID with path> --technology 
 ### Output
 
 If `[--output_path <PATH>]` is not specified results will be `<EXP-ID with path>/results` dir. 
+
+### Running the workflow for SCEA
+
+If running for Single-cell Expression Atlas, include the Atlas-specific config by adding `-c atlas.config` to the Nextflow command.
+
