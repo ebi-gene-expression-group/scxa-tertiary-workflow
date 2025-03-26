@@ -1,100 +1,7 @@
-include { SCANPY_MULTIPLET_SCRUBLET  } from '../../../modules/scanpy-scripts/scanpy_multiplet_scrublet'
-include { SCANPY_PLOT_SCRUBLET } from '../../../modules/scanpy-scripts/scanpy_plot_scrublet'
-
-
-process SCANPY_MULTIPLET_SCRUBLET3 {
-    container params.scanpy_scripts_container
-    
-    input:
-        path anndata
-        val batch_variable
-
-    output:
-        path 'scrublet3.h5ad'
-
-    script:
-    def args    = task.ext.args ?: ""
-    """
-        export PYTHONIOENCODING='utf-8'
-        if [ -z "$batch_variable" ]; then
-            scanpy-cli multiplet scrublet \
-            --input-format 'anndata' \
-            --output-format 'anndata' \
-            $anndata \
-            scrublet3.h5ad
-        else
-            scanpy-cli multiplet scrublet \
-            --input-format 'anndata' \
-            --output-format 'anndata' \
-            --batch-key "$batch_variable" \
-            $anndata \
-            scrublet3.h5ad
-        fi
-    """
-    stub:
-    """
-        touch scrublet3.h5ad
-    """
-}
-
-process SCANPY_MULTIPLET_SCRUBLET2 {
-    container params.scanpy_scripts_container
-    
-    input:
-        path anndata
-        val batch_variable
-
-    output:
-        path 'scrublet2.h5ad'
-
-    script:
-    def args    = task.ext.args ?: ""
-    """
-        export PYTHONIOENCODING='utf-8'
-        if [ -z "$batch_variable" ]; then
-            scanpy-cli multiplet scrublet \
-            --input-format 'anndata' \
-            --output-format 'anndata' \
-            $anndata \
-            scrublet2.h5ad
-        else
-            scanpy-cli multiplet scrublet \
-            --input-format 'anndata' \
-            --output-format 'anndata' \
-            --batch-key "$batch_variable" \
-            $anndata \
-            scrublet3.h5ad
-        fi
-    """
-    stub:
-    """
-        touch scrublet2.h5ad
-    """
-}
-
-
-/*
- * takes collected results of different doublet finding processes and outputs majority voted results
- * requires different processes to output hd5a anndata
- */
-process MAJORITY_VOTE_DOUBLET {
-    container "quay.io/biocontainers/scanpy-scripts:1.1.2--pypyhdfd78af_1"
-    publishDir params.result_dir_path, mode: 'copy', pattern: '.h5ad'
-    input:
-        val methods 
-        path h5ad
-        val filter_threshold
-    
-    output:
-        path 'doublet_major.h5ad'
-
-    script:
-    """
-    majority_vote.py $methods ${h5ad.join(',')} $filter_threshold
-    echo $methods ${h5ad.join(',')} $filter_threshold >> majority_vote_params.txt
-    """
-}
-
+include { SCANPY_MULTIPLET_SCRUBLET  } from "${projectDir}/modules/scanpy-scripts/scanpy_multiplet_scrublet"
+include { SCANPY_PLOT_SCRUBLET } from "${projectDir}/modules/scanpy-scripts/scanpy_plot_scrublet"
+include { SCANPY_MULTIPLET_SCRUBLET1; SCANPY_MULTIPLET_SCRUBLET2} from "${projectDir}/modules/fake_doublet_process.nf"
+include {  MAJORITY_VOTE_DOUBLET } from "${projectDir}/modules/majority_vote_doublet.nf"
 
 // add new doublet finding modules in here
 def runDoubletProcess(method, adata_ch, batch_var=channel.empty()) {
@@ -109,10 +16,10 @@ def runDoubletProcess(method, adata_ch, batch_var=channel.empty()) {
     // run all methods
     switch(method) {
         case 'scrublet1':
-            return SCANPY_MULTIPLET_SCRUBLET2(adata_ch, batch_var)
+            return SCANPY_MULTIPLET_SCRUBLET1(adata_ch, batch_var)
 
         case 'scrublet2':
-            return SCANPY_MULTIPLET_SCRUBLET3(adata_ch, batch_var)
+            return SCANPY_MULTIPLET_SCRUBLET2(adata_ch, batch_var)
 
         case 'scrublet':
             scrublet_result = SCANPY_MULTIPLET_SCRUBLET(adata_ch, batch_var)
@@ -170,4 +77,5 @@ workflow {
             batch_var,
             methods,
             doublet_filt_thresh)
+
 }
