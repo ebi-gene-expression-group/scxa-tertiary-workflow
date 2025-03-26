@@ -12,7 +12,7 @@ params.celltype_field = 'NO_CELLTYPE_FIELD'
 params.neighbor_values = ['3', '5', '10', '15', '20', '25', '30', '50', '100']
 params.perplexity_values = ['1', '5', '10', '15', '20', '25', '30', '35', '40', '45', '50']
 params.resolution_values = ['0.1', '0.3', '0.5', '0.7', '1.0', '2.0', '3.0', '4.0', '5.0']
-params.slotname = "louvain_resolution"
+params.slotname = "leiden_resolution"
 params.clustering_slotname = params.resolution_values.collect { params.slotname + "_" + it }
 params.merged_group_slotname = params.clustering_slotname + [params.celltype_field]
 
