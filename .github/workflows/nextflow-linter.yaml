@@ -3,9 +3,11 @@ on:
   push:
     branches:
       - non-existent-branch
+      - hackathon
   pull_request:
     branches:
       - non-existent-branch
+      - hackathon
 
 jobs:
   lint:
