@@ -67,7 +67,7 @@ If `[--output_path <PATH>]` is not specified results will be `<EXP-ID with path>
 
 ## Credits
 
-ebi-gene-expression-group/scxa-tertiary-workflow was originally written by Anil Thanki, Iris Yu and Pedro Madrigal, based on a previous Galaxy workflow developed by Pablo Moreno and Jonathan Manning.
+ebi-gene-expression-group/scxa-tertiary-workflow was originally written by [Anil Thanki](https://github.com/anilthanki), [Iris Yu](https://github.com/irisdianauy) and [Pedro Madrigal](https://github.com/pmb59), based on a previous Galaxy workflow developed by Pablo Moreno and Jonathan Manning.
 
 We thank the following people and teams for their extensive assistance in the development of this pipeline:
 
