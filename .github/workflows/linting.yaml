@@ -19,34 +19,30 @@ jobs:
           distribution: 'adopt'
           java-version: '11'
 
-      - name: install Nextflow
-        run: |
-          wget -qO- https://get.nextflow.io | bash
-          chmod +x nextflow
-          mkdir -p $HOME/.local/bin
-          mv nextflow $HOME/.local/bin/
-          echo "$HOME/.local/bin" >> $GITHUB_PATH
+      #- name: install Nextflow
+      #  run: |
+      #    wget -qO- https://get.nextflow.io | bash
+      #    chmod +x nextflow
+      #    mkdir -p $HOME/.local/bin
+      #    mv nextflow $HOME/.local/bin/
+      #    echo "$HOME/.local/bin" >> $GITHUB_PATH
 
       - name: set up Python
         uses: actions/setup-python@v4
         with:
-          python-version: '3.x'
+          python-version: '3.12'
 
-      - name: Cache pip packages
-        uses: actions/cache@v3
-        with:
-          path: ~/.cache/pip
-          key: ${{ runner.os }}-pip-${{ hashFiles('**/requirements.txt') }}
-          restore-keys: |
-            ${{ runner.os }}-pip-
+      #- name: check Nextflow version
+      #  run: nextflow -version
+      
+      - name: Install Nextflow
+        uses: nf-core/setup-nextflow@v1
 
       - name: install nf-core tools
         run: |
           python -m pip install --upgrade pip
           pip install nf-core
-          
-      - name: check Nextflow version
-        run: nextflow -version
+
 
       # https://nf-co.re/tools/docs/latest/pipeline_lint_tests/
       - name: create .nf-core.yml
@@ -62,5 +58,5 @@ jobs:
           EOF
 
       - name: run nf-core lint
-        run: nf-core pipelines lint --dir ${{ github.workspace }} --show-passed
+        run: nf-core pipelines lint --dir ${GITHUB_WORKSPACE} --show-passed
 
