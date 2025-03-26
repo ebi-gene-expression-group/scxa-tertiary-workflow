@@ -49,7 +49,7 @@ obs_sources = [file for file in os.listdir(source_dir) if file.startswith('obs_s
 for idx, obs_source_file in enumerate(sorted(obs_sources)):
     ad_s = sc.read(os.path.join(source_dir, obs_source_file))
     if adata.n_obs == ad_s.n_obs and all(adata.obs_names == ad_s.obs_names):
-        keys_to_copy = (k for k in ad_s.obs.keys() if "louvain" in k)
+        keys_to_copy = (k for k in ad_s.obs.keys() if "leiden" in k)
         for k_to_copy in keys_to_copy:
             suffix = ''
             if k_to_copy in adata.obs:

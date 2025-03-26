@@ -12,9 +12,9 @@ process FIND_CLUSTERS {
     def args    = task.ext.args ?: ""
     """
         export PYTHONIOENCODING='utf-8'
-        scanpy-find-cluster louvain \
+        scanpy-find-cluster leiden \
         --neighbors-key 'neighbors' \
-        --key-added 'louvain_resolution_${resolution}' \
+        --key-added 'leiden_resolution_${resolution}' \
         --resolution ${resolution} \
         --random-state '1234' \
         --directed \
