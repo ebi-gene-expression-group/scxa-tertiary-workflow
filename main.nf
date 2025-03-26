@@ -6,9 +6,9 @@ log.info """
 ===============================
 WORKFLOW PARAMETER VALUES
 ===============================
-EXP dir path: ${params.input}
+EXP dir path: ${params.dir_path}
 Selected technology: ${params.technology}
-Results outdir: ${params.outdir}
+Results results_dir_path: ${params.result_dir_path}
 celltype_field: ${params.celltype_field}
 neighbor_values: ${params.neighbor_values}
 perplexity_values: ${params.perplexity_values}
