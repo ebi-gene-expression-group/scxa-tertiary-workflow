@@ -32,6 +32,14 @@ jobs:
         with:
           python-version: '3.x'
 
+      - name: Cache pip packages
+        uses: actions/cache@v2
+        with:
+          path: ~/.cache/pip
+          key: ${{ runner.os }}-pip-${{ hashFiles('**/requirements.txt') }}
+          restore-keys: |
+            ${{ runner.os }}-pip-
+
       - name: install nf-core tools
         run: |
           python -m pip install --upgrade pip
@@ -54,4 +62,12 @@ jobs:
           EOF
 
       - name: run nf-core lint
-        run: nf-core pipelines lint --dir /home/runner/work/scxa-tertiary-workflow/scxa-tertiary-workflow
+        run: nf-core pipelines lint --dir ${{ github.workspace }} --show-passed
+
+      - name: Upload lint results
+        uses: actions/upload-artifact@v2
+        if: always()
+        with:
+          name: lint-results
+          path: lint_results.txt
+    
