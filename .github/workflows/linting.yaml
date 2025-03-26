@@ -58,5 +58,5 @@ jobs:
           EOF
 
       - name: run nf-core lint
-        run: nf-core pipelines lint --dir ${GITHUB_WORKSPACE} --show-passed --verbose
+        run: nf-core pipelines lint --dir ${GITHUB_WORKSPACE} --show-passed
 
