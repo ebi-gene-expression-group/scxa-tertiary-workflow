@@ -7,3 +7,4 @@ results/
 *.pyc
 .DS_Store
 *.ipynb
+.nf-test

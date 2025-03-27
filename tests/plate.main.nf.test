@@ -9,7 +9,7 @@ nextflow_pipeline {
         when {
             params {
                 technology = "plate"
-                dir_path = "/home/runner/work/scxa-tertiary-workflow/scxa-tertiary-workflow/test-data/test-plate"
+                dir_path = "${projectDir}/scxa-tertiary-workflow/test-data/test-plate"
                 output_path = "test-data/test-plate-out"
                 celltype_field = "authors_cell_type_-_ontology_labels"
             }
