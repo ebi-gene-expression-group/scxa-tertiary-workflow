@@ -22,3 +22,7 @@ All releases will be versioned using [semantic versioning](http://semver.org/) w
 
 [Unreleased]: https://github.com/ebi-gene-expression-group/scxa-tertiary-workflow/compare/v1.0.0..HEAD
 [1.0.0]: https://github.com/ebi-gene-expression-group/scxa-tertiary-workflow/releases/tag/v1.0.0
+
+### Fixed
+
+### Changed 
