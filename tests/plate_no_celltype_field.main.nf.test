@@ -9,7 +9,7 @@ nextflow_pipeline {
         when {
             params {
                 technology = "plate"
-                dir_path = "${projectDir}/scxa-tertiary-workflow/test-data/test-plate"
+                dir_path = "${projectDir}/test-data/test-plate"
                 output_path = "test-data/test-plate-out"
             } 
         }
