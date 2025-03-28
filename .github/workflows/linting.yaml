@@ -3,40 +3,46 @@ on:
   push:
     branches:
       - non-existent-branch
+      - hackathon
   pull_request:
     branches:
       - non-existent-branch
+      - hackathon
 
 jobs:
   lint:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v2
-      - uses: actions/setup-java@v2
+      - uses: actions/checkout@v3
+      - uses: actions/setup-java@v3
         with:
           distribution: 'adopt'
           java-version: '11'
 
-      - name: install Nextflow
-        run: |
-          wget -qO- https://get.nextflow.io | bash
-          chmod +x nextflow
-          mkdir -p $HOME/.local/bin
-          mv nextflow $HOME/.local/bin/
-          echo "$HOME/.local/bin" >> $GITHUB_PATH
+      #- name: install Nextflow
+      #  run: |
+      #    wget -qO- https://get.nextflow.io | bash
+      #    chmod +x nextflow
+      #    mkdir -p $HOME/.local/bin
+      #    mv nextflow $HOME/.local/bin/
+      #    echo "$HOME/.local/bin" >> $GITHUB_PATH
 
       - name: set up Python
-        uses: actions/setup-python@v2
+        uses: actions/setup-python@v4
         with:
-          python-version: '3.x'
+          python-version: '3.12'
+
+      #- name: check Nextflow version
+      #  run: nextflow -version
+      
+      - name: Install Nextflow
+        uses: nf-core/setup-nextflow@v1
 
       - name: install nf-core tools
         run: |
           python -m pip install --upgrade pip
           pip install nf-core
-          
-      - name: check Nextflow version
-        run: nextflow -version
+
 
       # https://nf-co.re/tools/docs/latest/pipeline_lint_tests/
       - name: create .nf-core.yml
@@ -51,5 +57,10 @@ jobs:
             schema_params: False
           EOF
 
+
+      - name: Debug .nf-core.yml
+        run: cat .nf-core.yml
+
       - name: run nf-core lint
-        run: nf-core pipelines lint --dir .
+        run: nf-core pipelines lint --dir ${GITHUB_WORKSPACE} --show-passed
+
