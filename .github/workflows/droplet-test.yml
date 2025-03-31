@@ -1,0 +1,47 @@
+name: nf-core test droplet workflow
+# This workflow is triggered on PRs opened against the main/master and hackathon branch.
+# It can be additionally triggered manually with GitHub actions workflow dispatch button.
+
+on:
+  pull_request:
+    branches:
+      - main
+      - master
+      - hackathon
+  workflow_dispatch:
+
+jobs:
+  nf-test:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Singularity install with defaults
+        uses: singularityhub/install-singularity@main
+        with:
+          singularity-version: '4.1.4'
+
+      - name: Set up Nextflow
+        uses: nf-core/setup-nextflow@v1
+        with:
+          version: '21.10.6'
+          
+      - name: Set up nf-test
+        uses: nf-core/setup-nf-test@v1
+        with:
+          version: 0.9.2
+          install-pdiff: false
+
+      - name: Run nf-test
+        run: |
+          export NXF_CONFIG_FILE=nf-test.config
+          export SCXA_HPC_QUEUE="null"
+          nf-test test tests/droplet.main.nf.test --profile test --debug
+
+      - name: Run nf-test without optional celltype_field
+        run: |
+          export NXF_CONFIG_FILE=nf-test.config
+          export SCXA_HPC_QUEUE="null"
+          nf-test test tests/droplet_no_celltype_field.main.nf.test --profile test --debug
+
