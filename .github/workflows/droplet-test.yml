@@ -1,5 +1,5 @@
 name: nf-core test droplet workflow
-# This workflow is triggered on PRs opened against the main/master and hackaton branch.
+# This workflow is triggered on PRs opened against the main/master and hackathon branch.
 # It can be additionally triggered manually with GitHub actions workflow dispatch button.
 
 on:
