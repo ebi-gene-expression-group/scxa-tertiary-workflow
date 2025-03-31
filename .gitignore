@@ -1,0 +1,10 @@
+work/
+*.log
+.nextflow/
+.nextflow*
+/test-droplet-out/*
+results/
+*.pyc
+.DS_Store
+*.ipynb
+.nf-test
