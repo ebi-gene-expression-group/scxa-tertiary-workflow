@@ -36,9 +36,9 @@ workflow SCXA_TERTIARY {
     barcodes                    = Channel.fromPath("${params.dir_path}/barcodes.tsv")
     matrix                      = Channel.fromPath("${params.dir_path}/matrix.mtx")
     cellmeta                    = Channel.fromPath("${params.dir_path}/cell_metadata.tsv")
-    neighbors_ch                = channel.fromList(params.neighbor_values)
-    perplexity_ch               = channel.fromList(params.perplexity_values)
-    resolution_ch               = channel.fromList(params.resolution_values)
+    neighbors_ch                = Channel.fromList(params.neighbor_values)
+    perplexity_ch               = Channel.fromList(params.perplexity_values)
+    resolution_ch               = Channel.fromList(params.resolution_values)
     merged_group_slotname_ch    = Channel.fromList(params.merged_group_slotname)
 
     COLUMN_REARRANGE_1(
