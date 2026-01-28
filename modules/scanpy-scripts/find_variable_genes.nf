@@ -3,7 +3,7 @@ process FIND_VARIABLE_GENES {
 
     input:
         path anndata
-        val batch_variable
+        val batch_field
 
     output:
         path 'variable_genes.h5ad'
@@ -11,9 +11,9 @@ process FIND_VARIABLE_GENES {
     script:
     def args    = task.ext.args ?: ""
     """
-        batch_variable_tag=""
-        if [[ -n "$batch_variable" ]]; then
-            batch_variable_tag="--batch-key $batch_variable"
+        batch_field_tag=""
+        if [[ -n "$batch_field" ]]; then
+            batch_field_tag="--batch-key $batch_field"
         fi
 
         export PYTHONIOENCODING='utf-8'
@@ -23,7 +23,7 @@ process FIND_VARIABLE_GENES {
         --disp-limits 0.5 50.0 \
         --span 0.3 \
         --n-bins '20' \
-        \$batch_variable_tag \
+        \$batch_field_tag \
         --input-format 'anndata' \
         $anndata \
         --show-obj stdout \
