@@ -3,7 +3,7 @@ process SCANPY_MULTIPLET_SCRUBLET {
     
     input:
         path anndata
-        val batch_variable
+        val batch_field
 
     output:
         path 'scrublet.h5ad'
@@ -12,7 +12,7 @@ process SCANPY_MULTIPLET_SCRUBLET {
     def args    = task.ext.args ?: ""
     """
         export PYTHONIOENCODING='utf-8'
-        if [ -z "$batch_variable" ]; then
+        if [ -z "$batch_field" ]; then
             scanpy-cli multiplet scrublet \
             --input-format 'anndata' \
             --output-format 'anndata' \
@@ -22,7 +22,7 @@ process SCANPY_MULTIPLET_SCRUBLET {
             scanpy-cli multiplet scrublet \
             --input-format 'anndata' \
             --output-format 'anndata' \
-            --batch-key "$batch_variable" \
+            --batch-key "$batch_field" \
             $anndata \
             scrublet.h5ad
         fi
