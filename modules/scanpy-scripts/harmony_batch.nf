@@ -3,7 +3,7 @@ process HARMONY_BATCH {
 
     input:
         path anndata
-        val batch_variable
+        val batch_field
     output:
         path 'harmony.h5ad'
 
@@ -11,9 +11,9 @@ process HARMONY_BATCH {
     def args    = task.ext.args ?: ""
     """
         export PYTHONIOENCODING='utf-8'
-        if [[ -n "$batch_variable" ]]; then
+        if [[ -n "$batch_field" ]]; then
             scanpy-integrate harmony \
-            --batch-key $batch_variable \
+            --batch-key $batch_field \
             --basis 'X_pca' \
             --adjusted-basis 'X_pca_harmony' \
             --input-format 'anndata' \
