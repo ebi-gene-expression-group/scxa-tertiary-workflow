@@ -65,7 +65,7 @@ workflow SCXA_TERTIARY {
     if ( params.technology == "droplet" ) {
         SCRUBLET_ch = SCANPY_MULTIPLET_SCRUBLET(
             SCANPY_READ_10X.out,
-            params.batch_variable
+            params.batch_field
         )
         SCANPY_PLOT_SCRUBLET(
             SCRUBLET_ch
@@ -94,7 +94,7 @@ workflow SCXA_TERTIARY {
     )
     FIND_VARIABLE_GENES(
         NORMALISE_INTERNAL_DATA.out,
-        params.batch_variable
+        params.batch_field
     )
 
     if ( params.technology == "droplet" ) {
@@ -113,7 +113,7 @@ workflow SCXA_TERTIARY {
 
     HARMONY_BATCH(
         RUN_PCA.out,
-        params.batch_variable
+        params.batch_field
     )
     NEIGHBORS(
         HARMONY_BATCH.out,
