@@ -22,10 +22,26 @@ jobs:
         with:
           singularity-version: '4.1.4'
 
+      - name: Set up Java 11
+        uses: actions/setup-java@v4
+        with:
+          distribution: 'temurin'
+          java-version: '11'
+
       - name: Set up Nextflow
+        id: setup_nextflow
         uses: nf-core/setup-nextflow@v1
         with:
           version: '21.10.6'
+
+      - name: Fallback: install Nextflow manually
+        if: ${{ failure() && steps.setup_nextflow.outcome != 'success' }}
+        run: |
+          curl -s https://get.nextflow.io | bash
+          chmod +x nextflow
+          mkdir -p $HOME/.local/bin
+          mv nextflow $HOME/.local/bin/
+          echo "$HOME/.local/bin" >> $GITHUB_PATH
           
       - name: Set up nf-test
         uses: nf-core/setup-nf-test@v1
