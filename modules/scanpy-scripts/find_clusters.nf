@@ -11,21 +11,23 @@ process FIND_CLUSTERS {
     script:
     def args    = task.ext.args ?: ""
     """
+        ANNDATA=${WorkflowParamValidator.shellQuote(anndata)}
+        RESOLUTION=${WorkflowParamValidator.shellQuote(resolution)}
         export PYTHONIOENCODING='utf-8'
         scanpy-find-cluster leiden \
         --neighbors-key 'neighbors' \
-        --key-added 'leiden_resolution_${resolution}' \
-        --resolution ${resolution} \
+        --key-added "leiden_resolution_\$RESOLUTION" \
+        --resolution "\$RESOLUTION" \
         --random-state '1234' \
         --directed \
         --export-cluster output.tsv \
         --input-format 'anndata' \
-        $anndata \
+        "\$ANNDATA" \
         --show-obj stdout \
         --output-format anndata \
-        'clusters_${resolution}.h5ad'
+        "clusters_\${RESOLUTION}.h5ad"
 	
-	mv 'output.tsv' 'clusters_resolution_${resolution}.tsv'
+	mv 'output.tsv' "clusters_resolution_\${RESOLUTION}.tsv"
     """
     stub:
     """

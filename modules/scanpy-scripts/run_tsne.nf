@@ -16,22 +16,25 @@ process RUN_TSNE {
     script:
     def args    = task.ext.args ?: ""
     """
+            ANNDATA=${WorkflowParamValidator.shellQuote(anndata)}
+            PERPLEXITY=${WorkflowParamValidator.shellQuote(perplexity_values)}
+            REPRESENTATION=${WorkflowParamValidator.shellQuote(representation)}
             export PYTHONIOENCODING='utf-8'
             scanpy-run-tsne \
-            --use-rep $representation \
+            --use-rep "\$REPRESENTATION" \
             --export-embedding embeddings.tsv \
-            --perplexity $perplexity_values \
-            --key-added 'perplexity_$perplexity_values' \
+            --perplexity "\$PERPLEXITY" \
+            --key-added "perplexity_\$PERPLEXITY" \
             --early-exaggeration '12.0' \
             --learning-rate '400.0' \
             --no-fast-tsne \
             --random-state 1234  \
             --input-format 'anndata' \
-            $anndata \
+            "\$ANNDATA" \
             --show-obj stdout \
             --output-format anndata \
-            'tsne_${perplexity_values}.h5ad' \
-            && mv 'embeddings_perplexity_${perplexity_values}.tsv' 'tsne_perplexity_${perplexity_values}.tsv'
+            "tsne_\${PERPLEXITY}.h5ad" \
+            && mv "embeddings_perplexity_\${PERPLEXITY}.tsv" "tsne_perplexity_\${PERPLEXITY}.tsv"
     """
     stub:
     """

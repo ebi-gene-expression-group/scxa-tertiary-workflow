@@ -2,6 +2,8 @@
 
 nextflow.enable.dsl=2
 
+WorkflowParamValidator.validate(params)
+
 log.info """
 ===============================
 WORKFLOW PARAMETER VALUES

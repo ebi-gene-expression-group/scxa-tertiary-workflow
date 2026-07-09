@@ -13,8 +13,9 @@ process FIND_MARKERS {
     script:
 	def args    = task.ext.args ?: ""
     """
-	VAR="$merged_group_slotname"
-        PREFIX="${params.slotname}_"
+	ANNDATA=${WorkflowParamValidator.shellQuote(anndata)}
+	VAR=${WorkflowParamValidator.shellQuote(merged_group_slotname)}
+        PREFIX=${WorkflowParamValidator.shellQuote(params.slotname + "_")}
         echo \$VAR
         echo \$PREFIX
         if [[ "\$VAR" == *"\$PREFIX"* ]]; then
@@ -27,29 +28,29 @@ process FIND_MARKERS {
     	export PYTHONIOENCODING='utf-8'
 
 	scanpy-find-markers \
-	--save 'markers_${merged_group_slotname}.tsv' \
+	--save "markers_\${VAR}.tsv" \
 	--n-genes '100' \
-	--groupby '${merged_group_slotname}' \
-	--key-added 'markers_${merged_group_slotname}' \
+	--groupby "\$VAR" \
+	--key-added "markers_\${VAR}" \
 	--method 'wilcoxon' \
 	--use-raw  \
 	--reference 'rest' \
 	--filter-params 'min_in_group_fraction:0.0,max_out_group_fraction:1.0,min_fold_change:1.0'  \
 	--input-format 'anndata' \
-	$anndata  \
+	"\$ANNDATA"  \
 	--show-obj stdout \
 	--output-format anndata \
-	"markers_${merged_group_slotname}.h5ad" 
+	"markers_\${VAR}.h5ad"
 
 	command_exitcode=\$?
 	echo "Command exit code: \$command_exitcode"
 	
 	if [ "\$command_exitcode" -eq 0 ]; then
-	    if [ "${merged_group_slotname}" != "\${suffix}" ]; then
-	        mv "markers_${merged_group_slotname}.tsv" "markers_\${suffix}.tsv"
+	    if [ "\$VAR" != "\${suffix}" ]; then
+	        mv "markers_\${VAR}.tsv" "markers_\${suffix}.tsv"
 	        echo "Renamed markers file to markers_\${suffix}.tsv"
 	    else
-	        echo "${merged_group_slotname} and \${suffix} are the same, renaming file not required."
+	        echo "\$VAR and \${suffix} are the same, renaming file not required."
 	    fi
 	else
 	    echo "scanpy-find-markers failed with exit code \$command_exitcode" >&2
