@@ -28,6 +28,10 @@ class WorkflowParamValidator {
         requireList(params, 'merged_group_slotname', TOKEN)
     }
 
+    static String shellQuote(value) {
+        "'" + value.toString().replace("'", "'\"'\"'") + "'"
+    }
+
     private static void requirePath(def params, String name) {
         requireValue(params, "params.${name}", name)
         assertPattern(params.get(name), "params.${name}", PATH_VALUE)

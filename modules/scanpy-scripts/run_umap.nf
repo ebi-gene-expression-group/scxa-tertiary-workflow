@@ -17,7 +17,7 @@ process RUN_UMAP {
     """
 	export PYTHONIOENCODING='utf-8'
 	echo \$PYTHONIOENCODING
-	VAR="$anndata"
+	VAR=${WorkflowParamValidator.shellQuote(anndata)}
 	n_number="\${VAR%.h5ad}"
 	echo \$n_number
 	scanpy-run-umap \
@@ -33,7 +33,7 @@ process RUN_UMAP {
             --random-state 0 \
             --init-pos 'spectral' \
             --input-format 'anndata' \
-            $anndata \
+            "\$VAR" \
             --show-obj stdout \
             --output-format anndata \
             "umap_\${n_number}.h5ad" \

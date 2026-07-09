@@ -10,20 +10,23 @@ process NEIGHBORS_FOR_UMAP {
     script:
     def args    = task.ext.args ?: ""
     """
+        ANNDATA=${WorkflowParamValidator.shellQuote(anndata)}
+        N_NEIGHBORS=${WorkflowParamValidator.shellQuote(n_neighbors)}
+        REPRESENTATION=${WorkflowParamValidator.shellQuote(representation)}
         export PYTHONIOENCODING='utf-8'
         scanpy-neighbors \
-            --n-neighbors $n_neighbors \
-            --key-added 'neighbors_n_neighbors_${n_neighbors}' \
+            --n-neighbors "\$N_NEIGHBORS" \
+            --key-added "neighbors_n_neighbors_\$N_NEIGHBORS" \
             --method 'umap' \
             --metric 'euclidean' \
             --random-state '0' \
-            --use-rep $representation \
+            --use-rep "\$REPRESENTATION" \
             --n-pcs '50' \
             --input-format 'anndata' \
-            $anndata \
+            "\$ANNDATA" \
             --show-obj stdout \
             --output-format anndata \
-            'neighbors_${n_neighbors}.h5ad'
+            "neighbors_\${N_NEIGHBORS}.h5ad"
 
     """
     stub:

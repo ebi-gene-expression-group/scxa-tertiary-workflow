@@ -10,16 +10,18 @@ process NEIGHBORS {
     script:
     def args    = task.ext.args ?: ""
     """
+        ANNDATA=${WorkflowParamValidator.shellQuote(anndata)}
+        REPRESENTATION=${WorkflowParamValidator.shellQuote(representation)}
         export PYTHONIOENCODING='utf-8'
         scanpy-neighbors \
         --n-neighbors 15 \
         --method 'umap' \
         --metric 'euclidean' \
         --random-state '0' \
-        --use-rep $representation \
+        --use-rep "\$REPRESENTATION" \
         --n-pcs '50' \
         --input-format 'anndata' \
-        $anndata \
+        "\$ANNDATA" \
         --show-obj stdout \
         --output-format anndata \
         'neighbors.h5ad'
